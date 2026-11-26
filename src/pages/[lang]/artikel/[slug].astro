@@ -1,0 +1,161 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localeConfig, type Locale } from '../../../i18n/locales';
+import { topicLabelKey, useTranslations } from '../../../i18n/ui';
+import {
+  articleSlug,
+  getArticles,
+  isVisible,
+  translationsFor,
+  type Article,
+} from '../../../lib/articles';
+import { formatDate, isoDate } from '../../../lib/dates';
+import { articlePath, topicPath } from '../../../lib/paths';
+import { absoluteUrl, requireSite } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.filter(isVisible).map((article) => ({
+    params: { lang: article.data.lang, slug: articleSlug(article) },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const locale = article.data.lang;
+const t = useTranslations(locale);
+const slug = articleSlug(article);
+const pathname = articlePath(locale, slug);
+const { Content } = await render(article);
+const siblings = translationsFor(await getArticles(), article);
+const site = requireSite(Astro.site);
+const canonical = absoluteUrl(pathname, site);
+
+const alternatePaths: Partial<Record<Locale, string>> = {
+  [locale]: pathname,
+};
+for (const sibling of siblings) {
+  alternatePaths[sibling.data.lang] = articlePath(sibling.data.lang, articleSlug(sibling));
+}
+
+const jsonLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.data.title,
+  description: article.data.description,
+  datePublished: article.data.pubDate.toISOString(),
+  dateModified: (article.data.updatedDate ?? article.data.pubDate).toISOString(),
+  inLanguage: locale,
+  mainEntityOfPage: canonical,
+  publisher: {
+    '@type': 'Organization',
+    name: t('site.title'),
+    url: site.href,
+  },
+};
+
+if (article.data.sources.length > 0) {
+  jsonLd.citation = article.data.sources.map((source) => ({
+    '@type': 'CreativeWork',
+    name: source.title,
+    url: source.url,
+  }));
+}
+---
+
+<BaseLayout
+  locale={locale}
+  title={article.data.title}
+  description={article.data.description}
+  pathname={pathname}
+  ogType="article"
+  alternatePaths={alternatePaths}
+  publishedTime={article.data.pubDate}
+  modifiedTime={article.data.updatedDate ?? article.data.pubDate}
+  jsonLd={jsonLd}
+>
+  <article class="measure">
+    <header class="article-header">
+      <ul class="meta-list">
+        {
+          article.data.topics.map((topic) => (
+            <li>
+              <a href={topicPath(locale, topic)}>{t(topicLabelKey(topic))}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <h1>{article.data.title}</h1>
+      <p class="meta">
+        <span>{t('article.published')} </span>
+        <time datetime={isoDate(article.data.pubDate)}>{formatDate(article.data.pubDate, locale)}</time>
+        {
+          article.data.updatedDate && (
+            <>
+              <span> · {t('article.updated')} </span>
+              <time datetime={isoDate(article.data.updatedDate)}>
+                {formatDate(article.data.updatedDate, locale)}
+              </time>
+            </>
+          )
+        }
+      </p>
+    </header>
+
+    {article.data.placeholder && (
+      <aside class="notice" role="note">
+        <p>{t('article.placeholder')}</p>
+      </aside>
+    )}
+    {article.data.draft && (
+      <aside class="notice" role="note">
+        <p>{t('article.draft')}</p>
+      </aside>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      siblings.length > 0 && (
+        <nav aria-label={t('article.translations')}>
+          <h2>{t('article.translations')}</h2>
+          <ul class="translation-list">
+            {siblings.map((sibling) => (
+              <li>
+                <a
+                  href={articlePath(sibling.data.lang, articleSlug(sibling))}
+                  hreflang={localeConfig[sibling.data.lang].hreflang}
+                  lang={sibling.data.lang}
+                >
+                  {localeConfig[sibling.data.lang].label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {
+      article.data.sources.length > 0 && (
+        <section class="sources">
+          <h2>{t('article.sources')}</h2>
+          <ol>
+            {article.data.sources.map((source) => (
+              <li>
+                <a href={source.url}>{source.title}</a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

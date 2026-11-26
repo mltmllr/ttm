@@ -1,0 +1,33 @@
+---
+import type { Locale } from '../i18n/locales';
+import { topicLabelKey, useTranslations } from '../i18n/ui';
+import { articleSlug, type Article } from '../lib/articles';
+import { formatDate, isoDate } from '../lib/dates';
+import { articlePath, topicPath } from '../lib/paths';
+
+interface Props {
+  article: Article;
+  locale: Locale;
+  heading?: 'h2' | 'h3';
+}
+
+const { article, locale, heading: Heading = 'h2' } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<article class="entry">
+  <p class="entry-meta">
+    <time datetime={isoDate(article.data.pubDate)}>{formatDate(article.data.pubDate, locale)}</time>
+    {
+      article.data.topics.map((topic) => (
+        <a href={topicPath(locale, topic)}>{t(topicLabelKey(topic))}</a>
+      ))
+    }
+    {article.data.placeholder && <span class="flag">{t('article.placeholderShort')}</span>}
+    {article.data.draft && <span class="flag">{t('article.draft')}</span>}
+  </p>
+  <Heading>
+    <a href={articlePath(locale, articleSlug(article))}>{article.data.title}</a>
+  </Heading>
+  <p>{article.data.description}</p>
+</article>

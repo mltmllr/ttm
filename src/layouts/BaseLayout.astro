@@ -1,0 +1,84 @@
+---
+import '../styles/global.css';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { localeConfig, locales, type Locale } from '../i18n/locales';
+import { useTranslations } from '../i18n/ui';
+import { rssPath } from '../lib/paths';
+import { absoluteUrl, hreflangAlternates, requireSite, samePagePaths } from '../lib/seo';
+
+interface Props {
+  locale: Locale;
+  title?: string;
+  description: string;
+  pathname: string;
+  ogType?: 'website' | 'article';
+  alternatePaths?: Partial<Record<Locale, string>>;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  locale,
+  title,
+  description,
+  pathname,
+  ogType = 'website',
+  alternatePaths,
+  publishedTime,
+  modifiedTime,
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const t = useTranslations(locale);
+const site = requireSite(Astro.site);
+const documentTitle = title ? `${title} · ${t('site.title')}` : t('site.title');
+const canonical = absoluteUrl(pathname, site);
+const pathMap = alternatePaths ?? samePagePaths(pathname, locale);
+const alternates = hreflangAlternates(pathMap, site);
+const languages = locales.flatMap((item) => {
+  const href = pathMap[item];
+  if (!href) return [];
+  return [
+    {
+      lang: item,
+      href,
+      label: localeConfig[item].label,
+      current: item === locale,
+    },
+  ];
+});
+---
+
+<html lang={locale}>
+  <head>
+    <BaseHead
+      documentTitle={documentTitle}
+      description={description}
+      canonical={canonical}
+      locale={locale}
+      ogType={ogType}
+      alternates={alternates}
+      rssHref={absoluteUrl(rssPath(locale), site)}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      noindex={noindex}
+    />
+    {jsonLd && <JsonLd data={jsonLd} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#inhalt">{t('nav.skip')}</a>
+    <Header locale={locale} pathname={pathname} languages={languages} />
+    <main id="inhalt" tabindex="-1">
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
