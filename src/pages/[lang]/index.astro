@@ -1,0 +1,63 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import { localeFromParam, localeParams } from '../../i18n/locales';
+import { topicLabelKey, useTranslations } from '../../i18n/ui';
+import { articlesForLocale, getArticles } from '../../lib/articles';
+import { localePath, topicPath } from '../../lib/paths';
+import { absoluteUrl, requireSite } from '../../lib/seo';
+import { topics } from '../../lib/topics';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+const pathname = localePath(locale);
+const articles = articlesForLocale(await getArticles(), locale);
+const site = requireSite(Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: t('site.title'),
+  description: t('site.description'),
+  url: absoluteUrl(pathname, site),
+  inLanguage: locale,
+};
+---
+
+<BaseLayout locale={locale} description={t('site.description')} pathname={pathname} jsonLd={jsonLd}>
+  <header class="masthead">
+    <p class="kicker">{t('site.kicker')}</p>
+    <h1>{t('site.title')}</h1>
+    <p class="lede">{t('home.intro')}</p>
+    <ul class="topic-row">
+      {
+        topics.map((topic) => (
+          <li>
+            <a href={topicPath(locale, topic)}>{t(topicLabelKey(topic))}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <section aria-labelledby="neueste">
+    <h2 id="neueste" class="section-head">{t('home.latest')}</h2>
+    {
+      articles.length === 0 ? (
+        <p>{t('home.empty')}</p>
+      ) : (
+        <ol class="entry-list">
+          {articles.map((article) => (
+            <li>
+              <ArticleCard article={article} locale={locale} heading="h3" />
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </section>
+</BaseLayout>

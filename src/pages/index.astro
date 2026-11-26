@@ -1,0 +1,22 @@
+---
+import { defaultLocale } from '../i18n/locales';
+import { localePath } from '../lib/paths';
+import { absoluteUrl, requireSite } from '../lib/seo';
+
+const target = localePath(defaultLocale);
+const canonical = absoluteUrl(target, requireSite(Astro.site));
+---
+
+<html lang={defaultLocale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weiter zur deutschen Ausgabe</title>
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <p><a href={target}>Zur deutschen Ausgabe von The Technical Marketer</a></p>
+  </body>
+</html>

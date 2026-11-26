@@ -1,0 +1,75 @@
+---
+import { localeConfig, type Locale } from '../i18n/locales';
+import { useTranslations } from '../i18n/ui';
+import { aboutPath, localePath, topicsPath } from '../lib/paths';
+
+interface LanguageLink {
+  lang: Locale;
+  href: string;
+  label: string;
+  current: boolean;
+}
+
+interface Props {
+  locale: Locale;
+  pathname: string;
+  languages?: LanguageLink[];
+}
+
+const { locale, pathname, languages = [] } = Astro.props;
+const t = useTranslations(locale);
+const home = localePath(locale);
+const items = [
+  { href: home, label: t('nav.home') },
+  { href: topicsPath(locale), label: t('nav.topics') },
+  { href: aboutPath(locale), label: t('nav.about') },
+];
+
+function isCurrent(href: string): boolean {
+  if (href === home) return pathname === home;
+  return pathname === href || pathname.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <div class="wrap header-bar">
+    <a class="wordmark" href={home}>
+      <span class="wordmark-mark">{t('site.short')}</span>
+      <span class="wordmark-name">{t('site.title')}</span>
+    </a>
+    <div class="header-tools">
+      <nav class="nav" aria-label={t('nav.menu')}>
+        <ul>
+          {
+            items.map((item) => (
+              <li>
+                <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      {
+        languages.length > 1 && (
+          <ul class="languages" aria-label={t('nav.languages')}>
+            {languages.map((item) => (
+              <li>
+                {item.current ? (
+                  <span aria-current="true" lang={item.lang}>
+                    {item.label}
+                  </span>
+                ) : (
+                  <a href={item.href} hreflang={localeConfig[item.lang].hreflang} lang={item.lang}>
+                    {item.label}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</header>

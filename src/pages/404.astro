@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { defaultLocale } from '../i18n/locales';
+import { useTranslations } from '../i18n/ui';
+import { localePath } from '../lib/paths';
+
+const locale = defaultLocale;
+const t = useTranslations(locale);
+const pathname = '/404.html';
+---
+
+<BaseLayout locale={locale} title={t('notFound.title')} description={t('notFound.body')} pathname={pathname} noindex>
+  <div class="measure">
+    <h1>{t('notFound.title')}</h1>
+    <p>{t('notFound.body')}</p>
+    <p><a href={localePath(locale)}>{t('notFound.home')}</a></p>
+  </div>
+</BaseLayout>

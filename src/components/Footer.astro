@@ -1,0 +1,24 @@
+---
+import type { Locale } from '../i18n/locales';
+import { useTranslations } from '../i18n/ui';
+import { aboutPath, rssPath } from '../lib/paths';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-bar">
+    <p>{t('footer.note')}</p>
+    <ul class="footer-links">
+      <li><a href={`${aboutPath(locale)}#impressum`}>{t('about.imprint')}</a></li>
+      <li><a href={rssPath(locale)}>{t('footer.rss')}</a></li>
+    </ul>
+    <p>{t('footer.rights').replaceAll('{year}', String(year))}</p>
+  </div>
+</footer>
