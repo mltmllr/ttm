@@ -45,3 +45,8 @@ Beispielantwort. Laut Beispiel-Quelle gilt sie ab dem Beispieldatum. Ob es Ausna
 ### Beispielfrage: Muss ich meinen Container anpassen?
 
 Beispielantwort mit einem [Link](https://example.com/beispiel/gtm-hilfe), der im JSON-LD nur als Text erscheint.
+
+## Quellen
+
+- [Beispiel: GA4 Release Notes QUELLENTEXT-NICHT-IM-JSONLD](https://example.com/beispiel/ga4-release-notes), Stand 21.11.2026.
+- [Beispiel: GTM Hilfe](https://example.com/beispiel/gtm-hilfe)

@@ -27,8 +27,6 @@ const de = {
   'post.updated': 'Aktualisiert',
   'post.category': 'Kategorie',
   'post.topics': 'Themen',
-  'post.sources': 'Quellen',
-  'post.sourceDate': 'Stand {date}',
   'post.back': 'Zurück zu {category}',
   'category.rss': 'RSS-Feed dieser Kategorie',
   'topics.title': 'Themen',

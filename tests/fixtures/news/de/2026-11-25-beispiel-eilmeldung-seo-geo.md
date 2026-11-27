@@ -20,12 +20,12 @@ Zwei bis vier Sätze Details folgen hier. Sie sind in diesem Beispiel erfunden u
 
 Beispiel: Betroffen ist der Bereich Reporting. Prüfe bis zum Beispieldatum, ob deine Berichte angepasst werden müssen.
 
-## Quelle
-
-[Beispiel: Offizielle Mitteilung](https://example.com/beispiel/seo-mitteilung), Stand 25.11.2026.
-
 ## FAQ
 
 ### Beispielfrage: Gilt das auch für kleine Seiten?
 
 Beispielantwort. Die Quelle äußert sich dazu nicht, das ist **unklar**.
+
+## Quellen
+
+- [Beispiel: Offizielle Mitteilung QUELLENTEXT-NICHT-IM-JSONLD](https://example.com/beispiel/seo-mitteilung), Stand 25.11.2026.

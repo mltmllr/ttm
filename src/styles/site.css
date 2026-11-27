@@ -185,14 +185,6 @@ a.au-badge:hover { text-decoration: none; filter: brightness(1.25); }
 .prose pre { margin-top: var(--au-space-4); font-size: var(--au-text-sm); line-height: 1.6; }
 .prose table { display: block; overflow-x: auto; }
 
-/* --- Quellen --- */
-.sources { margin-top: var(--au-space-12); }
-.sources h2 { font-size: var(--au-text-xl); margin-bottom: var(--au-space-4); }
-.sources ol { padding-left: var(--au-space-6); }
-.sources li { color: var(--au-text-primary); }
-.sources a { color: var(--au-steel-300); overflow-wrap: anywhere; }
-.source-date { font-size: var(--au-text-sm); color: var(--au-text-tertiary); margin-left: var(--au-space-2); }
-
 .crumbs { font-size: var(--au-text-sm); }
 
 /* --- Rechtstexte --- */

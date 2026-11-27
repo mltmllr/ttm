@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { assertValidFaq, faqJsonLd, MAX_FAQ_ITEMS, parseFaq, toPlainText } from '../src/lib/faq.ts';
 
@@ -41,6 +42,45 @@ Gehört nicht zur FAQ.
 `);
   assert.equal(result.items.length, 1);
   assert.equal(result.items[0]!.answer, 'Antwort eins.');
+});
+
+test('## Quellen nach der FAQ landet nicht im FAQ-Markup', () => {
+  const result = parseFaq(
+    body(`## FAQ
+
+### Frage eins?
+
+Antwort eins.
+
+### Frage zwei?
+
+Antwort zwei.
+
+## Quellen
+
+- [Quelle A](https://example.com/a), Stand 01.12.2026.
+- [Quelle B](https://example.com/b)
+
+### Unterpunkt in den Quellen
+`),
+  );
+  assert.equal(result.items.length, 2);
+  assert.equal(result.items[1]!.answer, 'Antwort zwei.');
+  assert.doesNotMatch(JSON.stringify(faqJsonLd(result.items)), /Quelle|example\.com|Unterpunkt/);
+});
+
+test('alle Fixtures: FAQ gefolgt von Quellen, Quellen nicht im JSON-LD', () => {
+  const dir = new URL('./fixtures/news/de/', import.meta.url);
+  const files = readdirSync(dir).filter((f) => f.endsWith('.md'));
+  assert.ok(files.length > 0);
+  for (const file of files) {
+    const text = readFileSync(new URL(file, dir), 'utf8');
+    const headings = [...text.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+    assert.deepEqual(headings.slice(-2), ['FAQ', 'Quellen'], file);
+    const result = parseFaq(text);
+    assert.ok(result.items.length > 0, file);
+    assert.doesNotMatch(JSON.stringify(faqJsonLd(result.items)), /QUELLENTEXT-NICHT-IM-JSONLD|Quellen/, file);
+  }
 });
 
 test('FAQ muss genau "## FAQ" heißen', () => {

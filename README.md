@@ -22,6 +22,7 @@ Ein Build mit null Beiträgen ist gültig (Leerzustand, leere RSS-Feeds). Die Me
 
 1. Datei `src/content/news/de/JJJJ-MM-TT-slug.md` anlegen. Vorlage, Frontmatter-Felder mit erlaubten Werten und das FAQ-Format stehen in [`docs/beitrag-vorlage.md`](docs/beitrag-vorlage.md). Verbindlich für Inhalt und Ton ist der [Notion-Leitfaden](https://app.notion.com/p/425d60e0a75c81ba966ff9e9b16c6087).
 2. `npm run build` ausführen. Fehler im Frontmatter, im Dateinamen (Muster und Datum), beim Ordner/`lang` und im FAQ-Abschnitt brechen den Build ab. Fehlt `## FAQ`, gibt es eine Warnung.
+   Aufbau am Ende: `… ## Was das für dich heißt`, `## FAQ`, `## Quellen` (Markdown-Liste mit Links). Die Quellen stehen zusätzlich im Frontmatter `sources` (Pflicht, nur für Schema.org-`citation` und Meta). Die Beitragsseite rendert diese Liste nicht noch einmal.
 3. Pull Request öffnen. Der Merge auf `main` veröffentlicht den Beitrag.
 
 Neue Kategorie: ein Eintrag in `src/lib/categories.ts`. Schema, Navigation, Kategorie-Seite und RSS ziehen nach. Neues Topic: ein Eintrag in `src/lib/topics.ts`.
@@ -60,7 +61,7 @@ public/CNAME                    ttm.agentunit.com
 | RSS | `/de/rss.xml` und `/de/kategorie/<slug>/rss.xml` |
 | Sitemap | `/sitemap-index.xml` |
 
-Jeder Beitrag trägt NewsArticle-JSON-LD und, wenn ein `## FAQ`-Abschnitt vorhanden ist, FAQPage-JSON-LD.
+Jeder Beitrag trägt NewsArticle-JSON-LD und, wenn ein `## FAQ`-Abschnitt vorhanden ist, FAQPage-JSON-LD. Der FAQ-Abschnitt endet an der nächsten `## `-Überschrift, die Quellen landen also nicht im FAQ-Markup.
 
 ## Fixtures
 

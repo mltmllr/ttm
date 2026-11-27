@@ -27,3 +27,7 @@ Beispielmeldung zum Grok Bot. Zwei bis drei Sätze, davon einer zur Relevanz fü
 ### Beispielfrage: Betrifft das mein Budget?
 
 Beispielantwort. Die Quelle nennt dazu nichts, das ist **unklar**.
+
+## Quellen
+
+- [Beispiel: Ankündigung eines KI-Tools QUELLENTEXT-NICHT-IM-JSONLD](https://example.com/beispiel/ki-ankuendigung), Stand 21.11.2026.

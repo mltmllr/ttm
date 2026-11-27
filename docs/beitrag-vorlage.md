@@ -45,20 +45,22 @@ sources:
 
 Es gibt kein Feld `status` und kein Feld `draft`. Freigabe ist der Merge des Pull Requests: Was auf `main` liegt, ist veröffentlicht.
 
-Quellen im Frontmatter erscheinen als Quellenliste unter dem Beitrag und im Schema.org-Markup. Ein zusätzlicher Abschnitt „Quelle“ im Text ist bei Eilmeldungen laut Leitfaden üblich und schadet nicht.
+`sources` im Frontmatter ist Pflicht und speist das Schema.org-Markup (`citation`) und die Meta-Daten. Die Beitragsseite rendert diese Liste **nicht** sichtbar. Sichtbar sind nur die Quellen aus dem Text (`## Quellen` am Ende), deshalb müssen beide Angaben übereinstimmen.
 
 ## Textaufbau
 
 Länge und Abschnitte regelt der Notion-Leitfaden. Kurzfassung:
 
-- **Eilmeldung:** erster Satz sagt, was passiert ist, wen es betrifft und ab wann. Dann zwei bis vier Sätze Details, `## Was das für dich heißt`, `## Quelle`, `## FAQ`.
-- **Wochen-Update:** ein Satz Überblick, Zwischenüberschriften nur für Themen mit echten Neuigkeiten, `## Was das für dich heißt`, `## FAQ`. Ein Beitrag pro Kategorie.
+- **Eilmeldung:** erster Satz sagt, was passiert ist, wen es betrifft und ab wann. Dann zwei bis vier Sätze Details, `## Was das für dich heißt`, `## FAQ`, `## Quellen`.
+- **Wochen-Update:** ein Satz Überblick, Zwischenüberschriften nur für Themen mit echten Neuigkeiten, `## Was das für dich heißt`, `## FAQ`, `## Quellen`. Ein Beitrag pro Kategorie.
+
+Jeder Beitrag endet mit `## FAQ` und danach `## Quellen` (Markdown-Liste mit Links). Dieselben Quellen stehen zusätzlich im Frontmatter unter `sources`.
 
 Überschriften im Text beginnen bei `##`. Die Überschrift `#` setzt die Website aus `title`.
 
 ## FAQ-Format
 
-Jeder Beitrag endet mit einem FAQ-Abschnitt. Daraus erzeugt der Build automatisch FAQPage-Markup (Schema.org). Es gibt kein Frontmatter-Feld dafür.
+Jeder Beitrag hat einen FAQ-Abschnitt, auf den nur noch `## Quellen` folgt. Daraus erzeugt der Build automatisch FAQPage-Markup (Schema.org). Es gibt kein Frontmatter-Feld dafür.
 
 ```markdown
 ## FAQ
@@ -77,7 +79,7 @@ Regeln:
 - Die Überschrift heißt genau `## FAQ` (zwei `#`, Leerzeichen, `FAQ`). Nicht `### FAQ`, nicht `## FAQs`.
 - Darunter höchstens 10 Fragen, jede als `### Frage`.
 - Die Antwort steht als Absatz direkt unter der Frage. Mehrere Absätze sind möglich. Im Schema steht die Antwort als reiner Text, Markdown-Syntax wie Links oder Fettdruck wird entfernt.
-- Der Abschnitt endet an der nächsten `## `-Überschrift oder am Dateiende. Am besten steht `## FAQ` ganz am Ende.
+- Der Abschnitt endet an der nächsten `## `-Überschrift (in der Regel `## Quellen`) oder am Dateiende. Der Quellen-Abschnitt gelangt so nicht ins FAQPage-Markup.
 - Jede Frage braucht eine Antwort.
 - `## FAQ` ohne Fragen oder mehr als 10 Fragen brechen den Build ab. Fehlt `## FAQ` ganz, gibt der Build nur eine Warnung aus. Der Leitfaden verlangt die FAQ trotzdem.
 
@@ -106,15 +108,15 @@ Zwei bis vier Sätze Details.
 
 Reporting: Prüfe bis zum Beispieldatum, ob deine Looker-Studio-Berichte betroffen sind.
 
-## Quelle
-
-[Beispiel-Quelle: Release Notes](https://example.com/release-notes), Stand 01.12.2026.
-
 ## FAQ
 
 ### Gilt die Änderung für alle Properties?
 
 Laut Quelle ja. Zu Ausnahmen macht die Quelle keine Angaben, das ist unklar.
+
+## Quellen
+
+- [Beispiel-Quelle: Release Notes](https://example.com/release-notes), Stand 01.12.2026.
 ```
 
 ## Prüfen

@@ -91,22 +91,6 @@ const modified = data.updated ?? data.date;
       <div class="prose">
         <Content />
       </div>
-
-      <section class="sources" aria-labelledby="sources-title">
-        <h2 id="sources-title">{t('post.sources')}</h2>
-        <ol>
-          {
-            data.sources.map((source) => (
-              <li>
-                <a href={source.url} rel="noopener">{source.title}</a>
-                {source.date && (
-                  <span class="source-date">{t('post.sourceDate', { date: formatDate(source.date, locale) })}</span>
-                )}
-              </li>
-            ))
-          }
-        </ol>
-      </section>
     </div>
   </article>
 </BaseLayout>
