@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localeFromParam, localeParams } from '../../../i18n/locales';
+import { useTranslations } from '../../../i18n/ui';
+import { newsForLocale } from '../../../lib/news';
+import { localePath, topicPath, topicsPath } from '../../../lib/paths';
+import { topicList } from '../../../lib/topics';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+const posts = await newsForLocale(locale);
+const count = (id: string) => posts.filter((post) => (post.topics as string[]).includes(id)).length;
+---
+
+<BaseLayout
+  locale={locale}
+  title={t('topics.title')}
+  description={t('topics.lead')}
+  pathname={topicsPath(locale)}
+>
+  <section class="sect sect-tight">
+    <div class="sect-inner">
+      <nav class="crumbs" aria-label="Brotkrumen">
+        <a href={localePath(locale)}>{t('nav.home')}</a>
+      </nav>
+      <div class="sect-head" style="margin-top: var(--au-space-6);">
+        <div class="sect-label au-text-copper">{t('topics.title')}</div>
+        <h1 class="sect-title">{t('topics.title')}</h1>
+        <p class="sect-desc">{t('topics.lead')}</p>
+      </div>
+      <ul class="topic-grid" style="list-style:none;padding:0;margin:0;">
+        {
+          topicList.map((topic) => {
+            const n = count(topic.id);
+            return (
+              <li style="margin:0;">
+                <a class="au-card au-card-trace-steel topic-card" href={topicPath(locale, topic.id)}>
+                  <h2>{topic.label}</h2>
+                  <p>{topic.description}</p>
+                  <span class="topic-count">
+                    {n === 1 ? t('topics.count.one') : t('topics.count.other', { n })}
+                  </span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

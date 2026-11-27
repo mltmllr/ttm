@@ -1,0 +1,469 @@
+/* ============================================================================
+   AgentUnit Design System — Component Patterns
+   Reusable UI component classes. Import after base.css.
+   ============================================================================ */
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+.au-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--au-space-6);
+}
+
+.au-container-narrow { max-width: 800px; }
+.au-container-wide { max-width: 1440px; }
+
+.au-stack > * + * { margin-top: var(--au-space-4); }
+.au-stack-sm > * + * { margin-top: var(--au-space-2); }
+.au-stack-lg > * + * { margin-top: var(--au-space-8); }
+
+/* ==========================================================================
+   CARDS
+   ========================================================================== */
+
+.au-card {
+  background: var(--au-bg-raised);
+  border: var(--au-border-width-thin) solid var(--au-border-faint);
+  border-radius: var(--au-radius-md);
+  padding: var(--au-space-6);
+  transition: var(--au-transition-normal);
+}
+
+.au-card:hover {
+  border-color: var(--au-border-default);
+  box-shadow: var(--au-shadow-md);
+}
+
+.au-card-elevated {
+  background: var(--au-bg-elevated);
+  box-shadow: var(--au-shadow-lg);
+}
+
+.au-card-trace-crimson { border-top: var(--au-trace-medium) solid var(--au-crimson-400); }
+.au-card-trace-copper  { border-top: var(--au-trace-medium) solid var(--au-copper-400); }
+.au-card-trace-rose    { border-top: var(--au-trace-medium) solid var(--au-rose-400); }
+.au-card-trace-steel   { border-top: var(--au-trace-medium) solid var(--au-steel-400); }
+
+.au-card-glow-crimson {
+  border-color: var(--au-crimson-700);
+  box-shadow: var(--au-glow-crimson);
+}
+.au-card-glow-copper {
+  border-color: var(--au-copper-700);
+  box-shadow: var(--au-glow-copper);
+}
+.au-card-glow-steel {
+  border-color: var(--au-steel-700);
+  box-shadow: var(--au-glow-steel);
+}
+
+.au-card-header {
+  padding-bottom: var(--au-space-4);
+  margin-bottom: var(--au-space-4);
+  border-bottom: var(--au-border-width-thin) solid var(--au-border-faint);
+}
+
+.au-card-title {
+  font-size: var(--au-text-lg);
+  font-weight: var(--au-weight-semibold);
+  color: var(--au-text-primary);
+  margin: 0;
+}
+
+.au-card-subtitle {
+  font-size: var(--au-text-sm);
+  color: var(--au-text-secondary);
+  margin: var(--au-space-1) 0 0;
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+.au-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--au-space-2);
+  padding: var(--au-space-2) var(--au-space-4);
+  font-family: var(--au-font-sans);
+  font-size: var(--au-text-sm);
+  font-weight: var(--au-weight-medium);
+  line-height: 1;
+  border-radius: var(--au-radius-sm);
+  border: var(--au-border-width-thin) solid transparent;
+  cursor: pointer;
+  transition: var(--au-transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.au-btn:focus-visible {
+  outline: var(--au-border-width-medium) solid var(--au-steel-400);
+  outline-offset: 2px;
+}
+
+.au-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.au-btn-primary {
+  background: var(--au-crimson-400);
+  color: #fff;
+  border-color: var(--au-crimson-400);
+}
+.au-btn-primary:hover {
+  background: var(--au-crimson-300);
+  box-shadow: var(--au-glow-crimson);
+}
+
+.au-btn-secondary {
+  background: transparent;
+  color: var(--au-text-primary);
+  border-color: var(--au-border-default);
+}
+.au-btn-secondary:hover {
+  background: var(--au-bg-overlay);
+  border-color: var(--au-border-strong);
+}
+
+.au-btn-ghost {
+  background: transparent;
+  color: var(--au-text-secondary);
+  border-color: transparent;
+}
+.au-btn-ghost:hover {
+  background: var(--au-bg-overlay);
+  color: var(--au-text-primary);
+}
+
+.au-btn-danger {
+  background: var(--au-crimson-500);
+  color: #fff;
+  border-color: var(--au-crimson-500);
+}
+.au-btn-danger:hover {
+  background: var(--au-crimson-400);
+  box-shadow: var(--au-glow-crimson);
+}
+
+.au-btn-copper {
+  background: var(--au-copper-400);
+  color: var(--au-text-inverse);
+  border-color: var(--au-copper-400);
+}
+.au-btn-copper:hover {
+  background: var(--au-copper-300);
+  box-shadow: var(--au-glow-copper);
+}
+
+.au-btn-sm { padding: var(--au-space-1) var(--au-space-3); font-size: var(--au-text-xs); }
+.au-btn-lg { padding: var(--au-space-3) var(--au-space-6); font-size: var(--au-text-base); }
+
+/* ==========================================================================
+   FORM ELEMENTS
+   ========================================================================== */
+
+.au-input,
+.au-select,
+.au-textarea {
+  width: 100%;
+  padding: var(--au-space-2) var(--au-space-3);
+  font-family: var(--au-font-sans);
+  font-size: var(--au-text-sm);
+  color: var(--au-text-primary);
+  background: var(--au-bg-base);
+  border: var(--au-border-width-thin) solid var(--au-border-default);
+  border-radius: var(--au-radius-sm);
+  transition: var(--au-transition-fast);
+  outline: none;
+}
+
+.au-input::placeholder,
+.au-textarea::placeholder { color: var(--au-text-tertiary); }
+
+.au-input:hover, .au-select:hover, .au-textarea:hover { border-color: var(--au-border-strong); }
+
+.au-input:focus, .au-select:focus, .au-textarea:focus {
+  border-color: var(--au-steel-400);
+  box-shadow: 0 0 0 3px var(--au-steel-glow);
+}
+
+.au-textarea { min-height: 100px; resize: vertical; }
+
+.au-label {
+  display: block;
+  font-size: var(--au-text-sm);
+  font-weight: var(--au-weight-medium);
+  color: var(--au-text-secondary);
+  margin-bottom: var(--au-space-1);
+  letter-spacing: var(--au-tracking-wide);
+}
+
+.au-form-group { margin-bottom: var(--au-space-4); }
+.au-form-hint { font-size: var(--au-text-xs); color: var(--au-text-tertiary); margin-top: var(--au-space-1); }
+.au-form-error { font-size: var(--au-text-xs); color: var(--au-crimson-400); margin-top: var(--au-space-1); }
+
+/* ==========================================================================
+   BADGES & TAGS
+   ========================================================================== */
+
+.au-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15em 0.6em;
+  font-size: var(--au-text-xs);
+  font-weight: var(--au-weight-medium);
+  border-radius: var(--au-radius-full);
+  letter-spacing: var(--au-tracking-wide);
+  white-space: nowrap;
+}
+
+.au-badge-crimson { background: rgba(212,61,66,0.12); color: var(--au-crimson-400); border: var(--au-border-width-thin) solid rgba(212,61,66,0.25); }
+.au-badge-copper  { background: rgba(212,138,58,0.12); color: var(--au-copper-400); border: var(--au-border-width-thin) solid rgba(212,138,58,0.25); }
+.au-badge-rose    { background: rgba(212,88,122,0.12); color: var(--au-rose-400); border: var(--au-border-width-thin) solid rgba(212,88,122,0.25); }
+.au-badge-steel   { background: rgba(74,125,140,0.12); color: var(--au-steel-400); border: var(--au-border-width-thin) solid rgba(74,125,140,0.25); }
+.au-badge-success { background: rgba(52,211,153,0.12); color: var(--au-success); border: var(--au-border-width-thin) solid rgba(52,211,153,0.25); }
+.au-badge-slate   { background: rgba(94,107,130,0.12); color: var(--au-slate-400); border: var(--au-border-width-thin) solid rgba(94,107,130,0.25); }
+
+/* ==========================================================================
+   STATUS INDICATORS
+   ========================================================================== */
+
+.au-status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: var(--au-radius-full);
+  flex-shrink: 0;
+}
+
+.au-status-dot-success { background: var(--au-success); box-shadow: 0 0 6px var(--au-success-glow); }
+.au-status-dot-warning { background: var(--au-copper-400); box-shadow: 0 0 6px var(--au-copper-glow); }
+.au-status-dot-danger  { background: var(--au-crimson-400); box-shadow: 0 0 6px var(--au-crimson-glow); }
+.au-status-dot-info    { background: var(--au-steel-400); box-shadow: 0 0 6px var(--au-steel-glow); }
+.au-status-dot-idle    { background: var(--au-slate-500); }
+
+.au-status-dot-pulse { animation: au-pulse 2s ease-in-out infinite; }
+@keyframes au-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* ==========================================================================
+   NAVIGATION / SIDEBAR
+   ========================================================================== */
+
+.au-nav { display: flex; flex-direction: column; gap: var(--au-space-1); }
+
+.au-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--au-space-3);
+  padding: var(--au-space-2) var(--au-space-3);
+  font-size: var(--au-text-sm);
+  color: var(--au-text-secondary);
+  border-radius: var(--au-radius-sm);
+  transition: var(--au-transition-fast);
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.au-nav-item:hover { background: var(--au-bg-overlay); color: var(--au-text-primary); text-decoration: none; }
+.au-nav-item-active {
+  background: var(--au-bg-overlay);
+  color: var(--au-crimson-400);
+  border-left: var(--au-trace-medium) solid var(--au-crimson-400);
+}
+
+.au-nav-section {
+  font-size: var(--au-text-xs);
+  font-weight: var(--au-weight-semibold);
+  color: var(--au-text-tertiary);
+  letter-spacing: var(--au-tracking-wider);
+  text-transform: uppercase;
+  padding: var(--au-space-4) var(--au-space-3) var(--au-space-2);
+}
+
+/* ==========================================================================
+   ALERTS / NOTICES
+   ========================================================================== */
+
+.au-alert {
+  padding: var(--au-space-4);
+  border-radius: var(--au-radius-md);
+  border: var(--au-border-width-thin) solid;
+  font-size: var(--au-text-sm);
+}
+
+.au-alert-info    { background: rgba(74,125,140,0.08); border-color: rgba(74,125,140,0.2); color: var(--au-steel-300); }
+.au-alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); color: #6ee7b7; }
+.au-alert-warning { background: rgba(212,138,58,0.08); border-color: rgba(212,138,58,0.2); color: var(--au-copper-300); }
+.au-alert-danger  { background: rgba(212,61,66,0.08); border-color: rgba(212,61,66,0.2); color: var(--au-crimson-300); }
+
+/* ==========================================================================
+   METRIC / STAT DISPLAY
+   ========================================================================== */
+
+.au-metric { display: flex; flex-direction: column; gap: var(--au-space-1); }
+
+.au-metric-value {
+  font-family: var(--au-font-mono);
+  font-size: var(--au-text-3xl);
+  font-weight: var(--au-weight-bold);
+  color: var(--au-text-primary);
+  line-height: 1;
+  letter-spacing: var(--au-tracking-tight);
+}
+
+.au-metric-label {
+  font-size: var(--au-text-xs);
+  font-weight: var(--au-weight-medium);
+  color: var(--au-text-tertiary);
+  letter-spacing: var(--au-tracking-wider);
+  text-transform: uppercase;
+}
+
+.au-metric-trend-up   { color: var(--au-success); }
+.au-metric-trend-down { color: var(--au-crimson-400); }
+
+/* ==========================================================================
+   CIRCUIT TRACE DECORATIONS
+   ========================================================================== */
+
+.au-trace-divider {
+  height: var(--au-trace-thin);
+  background: linear-gradient(90deg, transparent, var(--au-crimson-700) 15%, var(--au-crimson-400) 50%, var(--au-crimson-700) 85%, transparent);
+  margin: var(--au-space-8) 0;
+}
+
+.au-trace-node {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: var(--au-radius-full);
+  background: var(--au-copper-400);
+  box-shadow: var(--au-glow-copper);
+}
+.au-trace-node-crimson { background: var(--au-crimson-400); box-shadow: var(--au-glow-crimson); }
+.au-trace-node-steel   { background: var(--au-steel-400); box-shadow: var(--au-glow-steel); }
+
+.au-trace-corner { position: relative; }
+.au-trace-corner::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 24px; height: 24px;
+  border-top: var(--au-trace-medium) solid var(--au-crimson-400);
+  border-left: var(--au-trace-medium) solid var(--au-crimson-400);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   PCB GRID BACKGROUNDS
+   ========================================================================== */
+
+.au-grid-bg {
+  background-image:
+    radial-gradient(circle, var(--au-grid-color) var(--au-grid-dot-size), transparent var(--au-grid-dot-size));
+  background-size: var(--au-grid-size) var(--au-grid-size);
+}
+
+.au-grid-lines-bg {
+  background-image:
+    linear-gradient(var(--au-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--au-grid-color) 1px, transparent 1px);
+  background-size: var(--au-grid-size) var(--au-grid-size);
+}
+
+/* Dense micro-grid — fine PCB silkscreen */
+.au-grid-micro-bg {
+  background-image:
+    radial-gradient(circle, var(--au-grid-color) 0.5px, transparent 0.5px);
+  background-size: var(--au-grid-size-sm) var(--au-grid-size-sm);
+}
+
+/* Large structural grid with accent crosshairs */
+.au-grid-circuit-bg {
+  background-image:
+    linear-gradient(var(--au-grid-color-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--au-grid-color-strong) 1px, transparent 1px),
+    radial-gradient(circle, var(--au-grid-color-accent) 2px, transparent 2px);
+  background-size:
+    var(--au-grid-size-lg) var(--au-grid-size-lg),
+    var(--au-grid-size-lg) var(--au-grid-size-lg),
+    var(--au-grid-size-lg) var(--au-grid-size-lg);
+}
+
+/* Diagonal trace pattern — PCB routing at 45° */
+.au-grid-diagonal-bg {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 23px,
+      var(--au-grid-color) 23px,
+      var(--au-grid-color) 24px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 23px,
+      rgba(30, 42, 66, 0.25) 23px,
+      rgba(30, 42, 66, 0.25) 24px
+    );
+}
+
+/* Combined: dots + lines at different scales */
+.au-grid-layered-bg {
+  background-image:
+    linear-gradient(rgba(30,42,66,0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,42,66,0.2) 1px, transparent 1px),
+    radial-gradient(circle, rgba(30,42,66,0.5) 1px, transparent 1px);
+  background-size:
+    var(--au-grid-size-lg) var(--au-grid-size-lg),
+    var(--au-grid-size-lg) var(--au-grid-size-lg),
+    var(--au-grid-size) var(--au-grid-size);
+}
+
+/* Hex pattern — honeycomb PCB mounting */
+.au-grid-hex-bg {
+  background-color: var(--au-bg-base);
+  background-image:
+    radial-gradient(circle at 0% 50%, var(--au-grid-color) 2px, transparent 2px),
+    radial-gradient(circle at 100% 50%, var(--au-grid-color) 2px, transparent 2px),
+    radial-gradient(circle at 50% 0%, var(--au-grid-color) 2px, transparent 2px),
+    radial-gradient(circle at 50% 100%, var(--au-grid-color) 2px, transparent 2px);
+  background-size: 28px 48px;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+.au-text-crimson { color: var(--au-crimson-400); }
+.au-text-copper  { color: var(--au-copper-400); }
+.au-text-rose    { color: var(--au-rose-400); }
+.au-text-steel   { color: var(--au-steel-400); }
+.au-text-success { color: var(--au-success); }
+.au-text-muted   { color: var(--au-text-secondary); }
+.au-mono { font-family: var(--au-font-mono); }
+
+.au-text-glow-crimson { color: var(--au-crimson-400); text-shadow: 0 0 10px var(--au-crimson-glow); }
+.au-text-glow-copper  { color: var(--au-copper-400); text-shadow: 0 0 10px var(--au-copper-glow); }
+.au-text-glow-steel   { color: var(--au-steel-400); text-shadow: 0 0 10px var(--au-steel-glow); }
+
+.au-fade-in { animation: au-fade-in var(--au-duration-normal) var(--au-ease-out) forwards; }
+@keyframes au-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.au-slide-up { animation: au-slide-up var(--au-duration-slow) var(--au-ease-out) forwards; }
+@keyframes au-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}

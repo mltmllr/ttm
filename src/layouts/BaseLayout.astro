@@ -1,9 +1,15 @@
 ---
-import '../styles/global.css';
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import '../styles/site.css';
 import BaseHead from '../components/BaseHead.astro';
+import ConsentBanner from '../components/ConsentBanner.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import JsonLd from '../components/JsonLd.astro';
+import { siteConfig } from '../config/site';
 import { localeConfig, locales, type Locale } from '../i18n/locales';
 import { useTranslations } from '../i18n/ui';
 import { rssPath } from '../lib/paths';
@@ -16,10 +22,11 @@ interface Props {
   pathname: string;
   ogType?: 'website' | 'article';
   alternatePaths?: Partial<Record<Locale, string>>;
+  extraFeeds?: { title: string; href: string }[];
   publishedTime?: Date;
   modifiedTime?: Date;
   noindex?: boolean;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -29,6 +36,7 @@ const {
   pathname,
   ogType = 'website',
   alternatePaths,
+  extraFeeds,
   publishedTime,
   modifiedTime,
   noindex = false,
@@ -53,6 +61,7 @@ const languages = locales.flatMap((item) => {
     },
   ];
 });
+const feeds = extraFeeds?.map((feed) => ({ ...feed, href: absoluteUrl(feed.href, site) }));
 ---
 
 <html lang={locale}>
@@ -65,20 +74,20 @@ const languages = locales.flatMap((item) => {
       ogType={ogType}
       alternates={alternates}
       rssHref={absoluteUrl(rssPath(locale), site)}
+      extraFeeds={feeds}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
       noindex={noindex}
     />
     {jsonLd && <JsonLd data={jsonLd} />}
   </head>
-  <body>
+  <body class="au-grid-bg">
     <a class="skip-link" href="#inhalt">{t('nav.skip')}</a>
     <Header locale={locale} pathname={pathname} languages={languages} />
-    <main id="inhalt" tabindex="-1">
-      <div class="wrap">
-        <slot />
-      </div>
+    <main id="inhalt" class="page" tabindex="-1">
+      <slot />
     </main>
     <Footer locale={locale} />
+    {siteConfig.ga4MeasurementId && <ConsentBanner locale={locale} />}
   </body>
 </html>

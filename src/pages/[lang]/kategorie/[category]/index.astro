@@ -1,0 +1,47 @@
+---
+import PostList from '../../../../components/PostList.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { localeFromParam, locales } from '../../../../i18n/locales';
+import { useTranslations } from '../../../../i18n/ui';
+import { categories, categoryBySlug } from '../../../../lib/categories';
+import { newsForLocale } from '../../../../lib/news';
+import { categoryPath, categoryRssPath, localePath } from '../../../../lib/paths';
+
+export function getStaticPaths() {
+  return locales.flatMap((lang) =>
+    categories.map((category) => ({ params: { lang, category: category.slug } })),
+  );
+}
+
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+const category = categoryBySlug(Astro.params.category ?? '');
+const posts = (await newsForLocale(locale)).filter((post) => post.category.slug === category.slug);
+const pathname = categoryPath(locale, category.slug);
+const feedHref = categoryRssPath(locale, category.slug);
+---
+
+<BaseLayout
+  locale={locale}
+  title={category.label}
+  description={category.description}
+  pathname={pathname}
+  extraFeeds={[{ title: `${t('site.title')}: ${category.label}`, href: feedHref }]}
+>
+  <section class="sect sect-tight">
+    <div class="sect-inner">
+      <nav class="crumbs" aria-label="Brotkrumen">
+        <a href={localePath(locale)}>{t('nav.home')}</a>
+      </nav>
+      <div class="sect-head" style="margin-top: var(--au-space-6);">
+        <div class="sect-label au-text-crimson">{t('post.category')}</div>
+        <h1 class="sect-title">{category.label}</h1>
+        <p class="sect-desc">{category.description}</p>
+        <p style="margin-top: var(--au-space-4);">
+          <a class="au-btn au-btn-secondary au-btn-sm" href={feedHref}>{t('category.rss')}</a>
+        </p>
+      </div>
+      <PostList posts={posts} locale={locale} />
+    </div>
+  </section>
+</BaseLayout>

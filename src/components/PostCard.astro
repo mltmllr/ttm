@@ -1,0 +1,36 @@
+---
+import type { Locale } from '../i18n/locales';
+import { formatDate, isoDate } from '../lib/dates';
+import type { NewsPost } from '../lib/news';
+import { categoryPath, newsPath } from '../lib/paths';
+import { topicInfo } from '../lib/topics';
+import PostLabel from './PostLabel.astro';
+
+interface Props {
+  post: NewsPost;
+  locale: Locale;
+}
+
+const { post, locale } = Astro.props;
+const { data } = post.entry;
+const href = newsPath(locale, post.slug);
+---
+
+<article class="au-card post-card">
+  <div class="post-meta">
+    <PostLabel post={post} locale={locale} />
+    <a class="post-category" href={categoryPath(locale, post.category.slug)}>{post.category.label}</a>
+    <time datetime={isoDate(data.date)}>{formatDate(data.date, locale)}</time>
+  </div>
+  <h3 class="post-title"><a href={href}>{data.title}</a></h3>
+  <p class="post-desc">{data.description}</p>
+  <ul class="tag-list" aria-label="Themen">
+    {
+      post.topics.map((id) => (
+        <li>
+          <span class="au-badge au-badge-slate">{topicInfo(id).label}</span>
+        </li>
+      ))
+    }
+  </ul>
+</article>

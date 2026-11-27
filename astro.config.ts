@@ -1,4 +1,3 @@
-import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 import { defaultLocale, localeConfig, locales } from './src/i18n/locales';
@@ -27,13 +26,14 @@ export default defineConfig({
     },
   },
   integrations: [
-    mdx(),
     sitemap({
       filter: (page) => {
         const { pathname } = new URL(page);
         if (pathname === '/') return false;
         if (pathname.endsWith('/rss.xml')) return false;
         if (pathname.includes('/404')) return false;
+        // Solange Impressum und Datenschutz Platzhalter sind (noindex), nicht in die Sitemap.
+        if (/\/(impressum|datenschutz)\/$/.test(pathname)) return false;
         return true;
       },
       i18n: {
@@ -43,11 +43,9 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    // Nur Dark Mode: ein dunkles Shiki-Theme, kein prefers-color-scheme.
     shikiConfig: {
-      themes: {
-        light: 'github-light',
-        dark: 'github-dark',
-      },
+      theme: 'github-dark',
     },
   },
 });

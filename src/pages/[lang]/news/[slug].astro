@@ -1,0 +1,112 @@
+---
+import { render } from 'astro:content';
+import PostLabel from '../../../components/PostLabel.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { localeFromParam } from '../../../i18n/locales';
+import { useTranslations } from '../../../i18n/ui';
+import { formatDate, isoDate } from '../../../lib/dates';
+import { postJsonLd } from '../../../lib/jsonld';
+import { getNews, type NewsPost } from '../../../lib/news';
+import { categoryPath, newsPath, topicPath } from '../../../lib/paths';
+import { absoluteUrl, requireSite } from '../../../lib/seo';
+import { topicInfo } from '../../../lib/topics';
+
+export async function getStaticPaths() {
+  const posts = await getNews();
+  return posts.map((post) => ({
+    params: { lang: post.locale, slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: NewsPost;
+}
+
+const { post } = Astro.props;
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+const site = requireSite(Astro.site);
+const { data } = post.entry;
+const pathname = newsPath(locale, post.slug);
+const { Content } = await render(post.entry);
+const modified = data.updated ?? data.date;
+---
+
+<BaseLayout
+  locale={locale}
+  title={data.title}
+  description={data.description}
+  pathname={pathname}
+  ogType="article"
+  publishedTime={data.date}
+  modifiedTime={modified}
+  jsonLd={postJsonLd(post, absoluteUrl(pathname, site), site)}
+>
+  <article class="sect sect-tight">
+    <div class="sect-narrow">
+      <nav class="crumbs" aria-label="Brotkrumen">
+        <a href={categoryPath(locale, post.category.slug)}>{t('post.back', { category: post.category.label })}</a>
+      </nav>
+
+      <header class="post-header" style="margin-top: var(--au-space-6);">
+        <PostLabel post={post} locale={locale} />
+        <h1>{data.title}</h1>
+        <p class="post-lead">{data.description}</p>
+      </header>
+
+      <dl class="post-facts">
+        <div>
+          <dt>{t('post.category')}</dt>
+          <dd><a href={categoryPath(locale, post.category.slug)}>{post.category.label}</a></dd>
+        </div>
+        <div>
+          <dt>{t('post.published')}</dt>
+          <dd><time datetime={isoDate(data.date)}>{formatDate(data.date, locale)}</time></dd>
+        </div>
+        {
+          data.updated && (
+            <div>
+              <dt>{t('post.updated')}</dt>
+              <dd><time datetime={isoDate(data.updated)}>{formatDate(data.updated, locale)}</time></dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>{t('post.topics')}</dt>
+          <dd>
+            <ul class="tag-list">
+              {
+                post.topics.map((id) => (
+                  <li>
+                    <a class="au-badge au-badge-slate" href={topicPath(locale, id)}>{topicInfo(id).label}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <section class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">{t('post.sources')}</h2>
+        <ol>
+          {
+            data.sources.map((source) => (
+              <li>
+                <a href={source.url} rel="noopener">{source.title}</a>
+                {source.date && (
+                  <span class="source-date">{t('post.sourceDate', { date: formatDate(source.date, locale) })}</span>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
