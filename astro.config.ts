@@ -1,5 +1,7 @@
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
+import { satteri } from '@astrojs/markdown-satteri';
+import { newsImagesHastPlugin } from './src/lib/news-images';
 import { defaultLocale, localeConfig, locales } from './src/i18n/locales';
 
 /**
@@ -43,6 +45,8 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    // Bilder: Pflicht-Alt-Text, lazy loading, <figure> mit optionaler Bildunterschrift.
+    processor: satteri({ hastPlugins: [newsImagesHastPlugin] }),
     // Nur Dark Mode: ein dunkles Shiki-Theme, kein prefers-color-scheme.
     shikiConfig: {
       theme: 'github-dark',

@@ -3,6 +3,7 @@
  * Interner Linkcheck ohne Netz.
  * Prüft in allen HTML-Dateien eines Build-Ordners (Standard: dist) href/src auf
  * existierende Dateien und #Anker, außerdem url(...) in den CSS-Dateien.
+ * Zusätzlich: Jedes <img> braucht einen nicht leeren alt-Text (Bildpfade prüft der Linkcheck über src).
  * Externe Links (http/https anderer Hosts, mailto:, tel:, data:) werden übersprungen.
  * Absolute URLs auf die eigene Domain werden wie interne Pfade geprüft.
  *
@@ -85,6 +86,15 @@ for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
   for (const match of html.matchAll(/<(?:a|link|script|img|source|iframe)\b[^>]*?\s(href|src)=("([^"]*)"|'([^']*)')/gi)) {
     check(match[3] ?? match[4] ?? '', file, match[1]);
+  }
+}
+for (const file of htmlFiles) {
+  const html = readFileSync(file, 'utf8');
+  for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+    const alt = match[0].match(/\salt=("([^"]*)"|'([^']*)')/i);
+    if (!alt || !(alt[2] ?? alt[3] ?? '').trim()) {
+      problems.push(`${path.relative(root, file)}: Bild ohne Alt-Text: ${match[0].slice(0, 120)}`);
+    }
   }
 }
 for (const file of cssFiles) {
