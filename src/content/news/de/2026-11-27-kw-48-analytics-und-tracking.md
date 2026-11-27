@@ -1,5 +1,5 @@
 ---
-title: "Wochen-Update KW 48: Stape 5.23 bringt Multidomain-CMP"
+title: "Stape 5.23 bringt Multidomain-CMP"
 description: "Stape erweitert Consent im sGTM-Container und stoppt neue TikTok Gateways."
 date: 2026-11-27
 type: wochen-update
