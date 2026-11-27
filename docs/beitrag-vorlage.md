@@ -33,7 +33,7 @@ sources:
 
 | Feld | Pflicht | Erlaubte Werte |
 | --- | --- | --- |
-| `title` | ja | Text, möglichst höchstens ca. 70 Zeichen. Fakt statt Clickbait. |
+| `title` | ja | Text, möglichst höchstens ca. 70 Zeichen. Fakt statt Clickbait. Kein Präfix wie „Wochen-Update KW 48:“ oder „Eilmeldung:“ – das Label über dem Titel setzt die Website automatisch aus `type` und `date`. |
 | `description` | ja | Ein Satz, möglichst höchstens ca. 160 Zeichen. Erscheint in Liste, RSS und Meta-Description. |
 | `date` | ja | `JJJJ-MM-TT`, muss zum Dateinamen passen. |
 | `type` | ja | `eil` (Label „Eilmeldung“) oder `wochen-update` (Label „Wochen-Update KW 48“, die Kalenderwoche wird aus `date` berechnet). |
@@ -57,6 +57,22 @@ Länge und Abschnitte regelt der Notion-Leitfaden. Kurzfassung:
 Jeder Beitrag endet mit `## FAQ` und danach `## Quellen` (Markdown-Liste mit Links). Dieselben Quellen stehen zusätzlich im Frontmatter unter `sources`.
 
 Überschriften im Text beginnen bei `##`. Die Überschrift `#` setzt die Website aus `title`.
+
+## Bilder
+
+Bilder sind optional, Teaserbilder gibt es nicht.
+
+- **Ablage:** `public/images/news/<beitrag-slug>/datei.svg`. `<beitrag-slug>` ist der Dateiname des Beitrags ohne `.md`, z. B. `public/images/news/2026-11-27-kw-48-ki/modelle.svg`.
+- **Einbindung** im Text als eigener Absatz:
+
+  ```markdown
+  ![Alt-Text: was das Bild zeigt](/images/news/2026-11-27-kw-48-ki/modelle.svg "Optionale Bildunterschrift")
+  ```
+
+- **Alt-Text ist Pflicht.** Ein Bild ohne Alt-Text bricht den Build mit Dateiname ab. Der Alt-Text beschreibt den Inhalt, nicht „Bild“ oder „Grafik“.
+- Der Text in Anführungszeichen nach dem Pfad (`"…"`) wird zur Bildunterschrift. Ohne ihn gibt es keine.
+- Ein Bild als eigener Absatz wird als `<figure>` in voller Textbreite angezeigt (responsiv, `loading="lazy"`). Ein Bild mitten im Satz bleibt inline.
+- Der Linkcheck im Pull Request prüft, ob jeder Bildpfad existiert und jedes Bild einen Alt-Text hat.
 
 ## FAQ-Format
 
