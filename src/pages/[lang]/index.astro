@@ -1,12 +1,11 @@
 ---
-import ArticleCard from '../../components/ArticleCard.astro';
-import { localeFromParam, localeParams } from '../../i18n/locales';
-import { topicLabelKey, useTranslations } from '../../i18n/ui';
-import { articlesForLocale, getArticles } from '../../lib/articles';
-import { localePath, topicPath } from '../../lib/paths';
-import { absoluteUrl, requireSite } from '../../lib/seo';
-import { topics } from '../../lib/topics';
+import PostList from '../../components/PostList.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localeFromParam, localeParams } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { categories } from '../../lib/categories';
+import { newsForLocale } from '../../lib/news';
+import { categoryPath, localePath, rssPath } from '../../lib/paths';
 
 export function getStaticPaths() {
   return localeParams();
@@ -14,50 +13,60 @@ export function getStaticPaths() {
 
 const locale = localeFromParam(Astro.params.lang);
 const t = useTranslations(locale);
+const posts = (await newsForLocale(locale)).slice(0, 12);
 const pathname = localePath(locale);
-const articles = articlesForLocale(await getArticles(), locale);
-const site = requireSite(Astro.site);
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: t('site.title'),
-  description: t('site.description'),
-  url: absoluteUrl(pathname, site),
-  inLanguage: locale,
-};
+const empty = posts.length === 0;
 ---
 
-<BaseLayout locale={locale} description={t('site.description')} pathname={pathname} jsonLd={jsonLd}>
-  <header class="masthead">
-    <p class="kicker">{t('site.kicker')}</p>
-    <h1>{t('site.title')}</h1>
-    <p class="lede">{t('home.intro')}</p>
-    <ul class="topic-row">
-      {
-        topics.map((topic) => (
-          <li>
-            <a href={topicPath(locale, topic)}>{t(topicLabelKey(topic))}</a>
-          </li>
-        ))
-      }
-    </ul>
-  </header>
+<BaseLayout locale={locale} description={t('site.description')} pathname={pathname}>
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-orb"></div>
+    <div class="hero-inner">
+      <span class="au-badge au-badge-crimson">GA4 · GTM · Stape · SEO/GEO · KI</span>
+      <h1>The <span class="accent">Technical</span> Marketer</h1>
+      <p class="hero-sub">{t('home.lead')}</p>
+      <div class="hero-actions">
+        <a class="au-btn au-btn-primary" href={rssPath(locale)}>RSS abonnieren</a>
+      </div>
+    </div>
+  </section>
 
-  <section aria-labelledby="neueste">
-    <h2 id="neueste" class="section-head">{t('home.latest')}</h2>
-    {
-      articles.length === 0 ? (
-        <p>{t('home.empty')}</p>
-      ) : (
-        <ol class="entry-list">
-          {articles.map((article) => (
-            <li>
-              <ArticleCard article={article} locale={locale} heading="h3" />
+  <div class="sect-divider"></div>
+  <section class="sect" aria-labelledby="latest-title">
+    <div class="sect-inner">
+      <div class="sect-head">
+        <div class="sect-label au-text-crimson">{t('home.latest')}</div>
+        <h2 class="sect-title" id="latest-title">{t('home.title')}</h2>
+      </div>
+      <PostList
+        posts={posts}
+        locale={locale}
+        emptyTitle={t('home.empty.title')}
+        emptyBody={t('home.empty.body')}
+      />
+    </div>
+  </section>
+
+  <div class="sect-divider"></div>
+  <section class="sect" aria-labelledby="categories-title">
+    <div class="sect-inner">
+      <div class="sect-head">
+        <div class="sect-label au-text-copper">{t('home.categories')}</div>
+        <h2 class="sect-title" id="categories-title" style="font-size: var(--au-text-3xl);">{t('home.categories')}</h2>
+      </div>
+      <ul class="grid-3" style="list-style:none;padding:0;margin:0;">
+        {
+          categories.map((category) => (
+            <li style="margin:0;">
+              <a class="au-card au-card-trace-crimson category-card" href={categoryPath(locale, category.slug)}>
+                <h3>{category.label}</h3>
+                <p>{category.description}</p>
+              </a>
             </li>
-          ))}
-        </ol>
-      )
-    }
+          ))
+        }
+      </ul>
+    </div>
   </section>
 </BaseLayout>

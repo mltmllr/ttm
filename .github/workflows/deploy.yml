@@ -27,8 +27,15 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
+      - name: Test
+        run: npm test
       - name: Build
         run: npm run build
+        env:
+          # Optional: Repository-Variable (kein Secret). Leer = kein Banner, kein GA4.
+          PUBLIC_GA4_ID: ${{ vars.PUBLIC_GA4_ID }}
+      - name: Linkcheck
+        run: node scripts/check-links.mjs dist
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

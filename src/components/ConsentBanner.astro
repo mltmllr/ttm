@@ -1,0 +1,143 @@
+---
+import { siteConfig } from '../config/site';
+import type { Locale } from '../i18n/locales';
+import { useTranslations } from '../i18n/ui';
+import { privacyPath } from '../lib/paths';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const id = siteConfig.ga4MeasurementId;
+---
+
+{
+  id && (
+    <div
+      class="consent"
+      role="dialog"
+      aria-labelledby="consent-title"
+      aria-describedby="consent-body"
+      data-consent-banner
+      data-ga-id={id}
+      hidden
+    >
+      <div class="consent-inner au-card au-card-elevated">
+        <h2 id="consent-title" class="consent-title">{t('consent.title')}</h2>
+        <p id="consent-body">
+          {t('consent.body')} <a href={privacyPath(locale)}>{t('consent.privacy')}</a>.
+        </p>
+        <div class="consent-actions">
+          <button type="button" class="au-btn au-btn-secondary" data-consent="denied">
+            {t('consent.decline')}
+          </button>
+          <button type="button" class="au-btn au-btn-secondary" data-consent="granted">
+            {t('consent.accept')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  /**
+   * Opt-in für Google Analytics 4. Vor der Zustimmung entsteht kein Request an Google:
+   * gtag.js wird erst nach „Akzeptieren“ dynamisch nachgeladen.
+   * Die Entscheidung liegt in localStorage (Schlüssel ttm-consent).
+   */
+  const STORAGE_KEY = 'ttm-consent';
+  const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+  const measurementId = banner?.dataset.gaId;
+
+  type Decision = 'granted' | 'denied';
+  type GtagWindow = Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+    [key: `ga-disable-${string}`]: boolean | undefined;
+  };
+
+  function readDecision(): Decision | null {
+    try {
+      const value = localStorage.getItem(STORAGE_KEY);
+      return value === 'granted' || value === 'denied' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function storeDecision(decision: Decision): void {
+    try {
+      localStorage.setItem(STORAGE_KEY, decision);
+    } catch {
+      /* Speicher gesperrt: Entscheidung gilt nur für diese Seite. */
+    }
+  }
+
+  function loadAnalytics(id: string): void {
+    const w = window as GtagWindow;
+    w[`ga-disable-${id}`] = false;
+    if (document.querySelector('script[data-ga-loader]')) return;
+    w.dataLayer = w.dataLayer || [];
+    w.gtag = function () {
+      // gtag.js erwartet das arguments-Objekt, kein Array.
+      // eslint-disable-next-line prefer-rest-params
+      w.dataLayer!.push(arguments);
+    };
+    w.gtag('js', new Date());
+    w.gtag('config', id);
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.gaLoader = '';
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`;
+    document.head.appendChild(script);
+  }
+
+  function disableAnalytics(id: string): void {
+    (window as GtagWindow)[`ga-disable-${id}`] = true;
+    // Bereits gesetzte GA-Cookies entfernen (Domain und Host-Variante).
+    const host = location.hostname;
+    const domains = [host, `.${host}`, `.${host.split('.').slice(-2).join('.')}`];
+    for (const cookie of document.cookie.split(';')) {
+      const name = cookie.split('=')[0]?.trim();
+      if (name && (name === '_ga' || name.startsWith('_ga_') || name === '_gid')) {
+        for (const domain of domains) {
+          document.cookie = `${name}=; Max-Age=0; path=/; domain=${domain}`;
+        }
+        document.cookie = `${name}=; Max-Age=0; path=/`;
+      }
+    }
+  }
+
+  function apply(decision: Decision): void {
+    if (!measurementId) return;
+    if (decision === 'granted') loadAnalytics(measurementId);
+    else disableAnalytics(measurementId);
+  }
+
+  if (banner && measurementId) {
+    const open = () => {
+      banner.hidden = false;
+      banner.querySelector<HTMLButtonElement>('button')?.focus();
+    };
+
+    const initial = readDecision();
+    if (initial) apply(initial);
+    else open();
+
+    banner.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const decision = button.dataset.consent as Decision;
+        storeDecision(decision);
+        apply(decision);
+        banner.hidden = true;
+      });
+    });
+
+    document.querySelectorAll('[data-consent-open]').forEach((trigger) => {
+      trigger.addEventListener('click', open);
+    });
+  }
+</script>

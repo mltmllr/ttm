@@ -1,0 +1,12 @@
+/* Selbst gehostete Schriften (npm: @fontsource). Keine Requests an Drittanbieter.
+   Nur der Latin-Schnitt: er deckt Deutsch inklusive Umlauten und ß ab. */
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-500.css';
+@import '@fontsource/outfit/latin-400.css';
+@import '@fontsource/outfit/latin-600.css';
+@import '@fontsource/outfit/latin-700.css';
+@import '@fontsource/outfit/latin-800.css';

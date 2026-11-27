@@ -2,17 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { defaultLocale } from '../i18n/locales';
 import { useTranslations } from '../i18n/ui';
-import { localePath } from '../lib/paths';
+import { categories } from '../lib/categories';
+import { categoryPath, localePath } from '../lib/paths';
 
 const locale = defaultLocale;
 const t = useTranslations(locale);
 const pathname = '/404.html';
 ---
 
-<BaseLayout locale={locale} title={t('notFound.title')} description={t('notFound.body')} pathname={pathname} noindex>
-  <div class="measure">
-    <h1>{t('notFound.title')}</h1>
-    <p>{t('notFound.body')}</p>
-    <p><a href={localePath(locale)}>{t('notFound.home')}</a></p>
-  </div>
+<BaseLayout locale={locale} title={t('notFound.title')} description={t('notFound.body')} pathname={pathname} alternatePaths={{}} noindex>
+  <section class="sect">
+    <div class="sect-narrow">
+      <div class="sect-label au-text-crimson">404</div>
+      <h1 class="sect-title">{t('notFound.title')}</h1>
+      <p class="sect-desc">{t('notFound.body')}</p>
+      <div style="display:flex;gap:var(--au-space-3);flex-wrap:wrap;margin-top:var(--au-space-6);">
+        <a class="au-btn au-btn-primary" href={localePath(locale)}>{t('notFound.home')}</a>
+        {
+          categories.map((category) => (
+            <a class="au-btn au-btn-secondary" href={categoryPath(locale, category.slug)}>{category.label}</a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 </BaseLayout>

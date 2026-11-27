@@ -1,7 +1,8 @@
 ---
 import { localeConfig, type Locale } from '../i18n/locales';
 import { useTranslations } from '../i18n/ui';
-import { aboutPath, localePath, topicsPath } from '../lib/paths';
+import { categories } from '../lib/categories';
+import { categoryPath, localePath, topicsPath } from '../lib/paths';
 
 interface LanguageLink {
   lang: Locale;
@@ -20,56 +21,66 @@ const { locale, pathname, languages = [] } = Astro.props;
 const t = useTranslations(locale);
 const home = localePath(locale);
 const items = [
-  { href: home, label: t('nav.home') },
+  ...categories.map((category) => ({
+    href: categoryPath(locale, category.slug),
+    label: category.label,
+  })),
   { href: topicsPath(locale), label: t('nav.topics') },
-  { href: aboutPath(locale), label: t('nav.about') },
 ];
 
 function isCurrent(href: string): boolean {
-  if (href === home) return pathname === home;
   return pathname === href || pathname.startsWith(href);
 }
 ---
 
-<header class="site-header">
-  <div class="wrap header-bar">
-    <a class="wordmark" href={home}>
-      <span class="wordmark-mark">{t('site.short')}</span>
-      <span class="wordmark-name">{t('site.title')}</span>
-    </a>
-    <div class="header-tools">
-      <nav class="nav" aria-label={t('nav.menu')}>
-        <ul>
-          {
-            items.map((item) => (
-              <li>
-                <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+<header class="site-nav">
+  <a class="site-nav-logo" href={home}>
+    <em>{t('site.short')}</em>
+    <span class="site-nav-name">{t('site.title')}</span>
+  </a>
+  <button
+    class="site-nav-toggle"
+    type="button"
+    aria-label={t('nav.toggle')}
+    aria-expanded="false"
+    aria-controls="site-nav-links"
+    data-nav-toggle>&#9776;</button>
+  <nav aria-label={t('nav.menu')} class="site-nav-menu">
+    <ul class="site-nav-links" id="site-nav-links" data-nav-links>
+      {
+        items.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      {
+        languages.length > 1 &&
+          languages.map((item) => (
+            <li>
+              {item.current ? (
+                <span aria-current="true" lang={item.lang} class="site-nav-lang">
+                  {item.label}
+                </span>
+              ) : (
+                <a href={item.href} hreflang={localeConfig[item.lang].hreflang} lang={item.lang}>
                   {item.label}
                 </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-      {
-        languages.length > 1 && (
-          <ul class="languages" aria-label={t('nav.languages')}>
-            {languages.map((item) => (
-              <li>
-                {item.current ? (
-                  <span aria-current="true" lang={item.lang}>
-                    {item.label}
-                  </span>
-                ) : (
-                  <a href={item.href} hreflang={localeConfig[item.lang].hreflang} lang={item.lang}>
-                    {item.label}
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
-        )
+              )}
+            </li>
+          ))
       }
-    </div>
-  </div>
+    </ul>
+  </nav>
 </header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const links = document.querySelector<HTMLElement>('[data-nav-links]');
+  toggle?.addEventListener('click', () => {
+    const open = links?.classList.toggle('open') ?? false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>

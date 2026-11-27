@@ -1,48 +1,55 @@
 import { defaultLocale, locales, type Locale } from './locales';
-import { topics, type Topic } from '../lib/topics';
 
 const de = {
   'site.title': 'The Technical Marketer',
   'site.short': 'TTM',
   'site.description':
-    'Das Magazin für technisches Marketing. Google Analytics 4, Google Tag Manager und Looker Studio.',
-  'site.kicker': 'GA4 · Tag Manager · Looker Studio',
+    'News-Kanal für Online-Marketer: Was sich bei GA4, Google Tag Manager, Stape, SEO/GEO und KI-Tools ändert und was das für die Arbeit heißt.',
   'nav.skip': 'Zum Inhalt',
-  'nav.menu': 'Navigation',
-  'nav.home': 'Magazin',
+  'nav.menu': 'Hauptnavigation',
+  'nav.toggle': 'Menü öffnen oder schließen',
+  'nav.home': 'Start',
   'nav.topics': 'Themen',
-  'nav.about': 'Über',
   'nav.languages': 'Sprachen',
-  'home.latest': 'Neueste Artikel',
-  'home.intro':
-    'Ein kleines Magazin darüber, wie Messung, Tagging und Berichte tatsächlich gebaut werden.',
-  'home.empty': 'Noch keine Artikel in dieser Sprache.',
-  'article.published': 'Veröffentlicht',
-  'article.updated': 'Aktualisiert',
-  'article.sources': 'Quellen',
-  'article.draft': 'Entwurf, nur in der lokalen Vorschau',
-  'article.placeholder':
-    'Platzhalter. Dieser Text zeigt das Artikelformat. Er ist keine redaktionelle Veröffentlichung und enthält keine Kennzahlen.',
-  'article.placeholderShort': 'Platzhalter',
-  'article.translations': 'Andere Sprachen',
+  'home.title': 'News für Online-Marketer',
+  'home.lead':
+    'Knapp, verlässlich und mit Primärquelle: was sich bei Tracking, SEO/GEO und KI-Tools ändert, und was das für deine Arbeit heißt.',
+  'home.latest': 'Neueste Beiträge',
+  'home.categories': 'Kategorien',
+  'home.empty.title': 'Noch keine Beiträge',
+  'home.empty.body':
+    'Der Kanal startet bald. Sobald der erste Beitrag erscheint, steht er hier. Per RSS bleibst du auf dem Laufenden.',
+  'list.empty': 'In dieser Auswahl gibt es noch keinen Beitrag.',
+  'list.all': 'Alle Beiträge',
+  'label.eil': 'Eilmeldung',
+  'label.weekly': 'Wochen-Update KW {week}',
+  'post.published': 'Veröffentlicht',
+  'post.updated': 'Aktualisiert',
+  'post.category': 'Kategorie',
+  'post.topics': 'Themen',
+  'post.back': 'Zurück zu {category}',
+  'category.rss': 'RSS-Feed dieser Kategorie',
   'topics.title': 'Themen',
-  'topics.lead': 'Zurzeit nur diese drei. Ein Artikel kann mehrere davon tragen.',
-  'topics.empty': 'Zu diesem Thema gibt es noch keinen Artikel.',
-  'topics.count.one': '1 Artikel',
-  'topics.count.other': '{n} Artikel',
-  'topic.ga4': 'Google Analytics 4',
-  'topic.gtm': 'Google Tag Manager',
-  'topic.looker-studio': 'Looker Studio',
-  'topic.ga4.description': 'Ereignisse, Parameter und das, was eine Property tatsächlich empfängt.',
-  'topic.gtm.description': 'Container, Arbeitsbereiche, Versionen und Umgebungen.',
-  'topic.looker-studio.description': 'Berichte, die eine Datenquelle lesen, zum Beispiel eine GA4-Property.',
-  'about.imprint': 'Impressum',
-  'footer.note': 'Unabhängiges Magazin. Kein Angebot von Google.',
+  'topics.lead': 'Jeder Beitrag trägt ein oder mehrere Themen. Wähle ein Thema, um alle passenden Beiträge zu sehen.',
+  'topics.count.one': '1 Beitrag',
+  'topics.count.other': '{n} Beiträge',
+  'footer.note': 'Unabhängiger News-Kanal. Kein Angebot von Google.',
   'footer.rss': 'RSS',
+  'footer.imprint': 'Impressum',
+  'footer.privacy': 'Datenschutz',
+  'footer.cookies': 'Cookie-Einstellungen',
   'footer.rights': '© {year} The Technical Marketer',
+  'consent.title': 'Reichweitenmessung',
+  'consent.body':
+    'Mit deiner Einwilligung messen wir mit Google Analytics 4, wie die Seite genutzt wird. Ohne Einwilligung wird nichts an Google übertragen. Du kannst die Entscheidung jederzeit über „Cookie-Einstellungen“ im Footer ändern.',
+  'consent.privacy': 'Mehr in der Datenschutzerklärung',
+  'consent.accept': 'Akzeptieren',
+  'consent.decline': 'Ablehnen',
   'notFound.title': 'Seite nicht gefunden',
   'notFound.body': 'Diese Adresse gibt es hier nicht.',
   'notFound.home': 'Zur Startseite',
+  'legal.placeholder':
+    'Platzhalter: Dieser Text ist nicht final und muss vor der Veröffentlichung rechtlich geprüft und ersetzt werden.',
 } as const;
 
 export type UiKey = keyof typeof de;
@@ -50,32 +57,19 @@ export type UiKey = keyof typeof de;
 export const ui: Record<Locale, { [K in UiKey]: string }> = { de };
 
 for (const locale of locales) {
-  const dictionary = ui[locale];
-  if (!dictionary) {
+  if (!ui[locale]) {
     throw new Error(`Keine UI-Texte für "${locale}". Ergänze src/i18n/ui.ts.`);
-  }
-  for (const topic of topics) {
-    for (const key of [`topic.${topic}`, `topic.${topic}.description`] as const) {
-      if (!dictionary[key as UiKey]) {
-        throw new Error(`UI-Text "${key}" fehlt für "${locale}".`);
-      }
-    }
   }
 }
 
 export function useTranslations(locale: Locale) {
   const dictionary = ui[locale] ?? ui[defaultLocale];
-  return function t(key: UiKey): string {
-    const value = dictionary[key] ?? ui[defaultLocale][key];
+  return function t(key: UiKey, values: Record<string, string | number> = {}): string {
+    let value = dictionary[key] ?? ui[defaultLocale][key];
     if (!value) throw new Error(`UI-Text "${key}" fehlt für "${locale}".`);
+    for (const [name, replacement] of Object.entries(values)) {
+      value = value.replaceAll(`{${name}}`, String(replacement));
+    }
     return value;
   };
-}
-
-export function topicLabelKey(topic: Topic): UiKey {
-  return `topic.${topic}` as UiKey;
-}
-
-export function topicDescriptionKey(topic: Topic): UiKey {
-  return `topic.${topic}.description` as UiKey;
 }

@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../config/site';
+import { localeFromParam, localeParams } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { privacyPath } from '../../lib/paths';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+const analyticsActive = siteConfig.ga4MeasurementId !== '';
+---
+
+<BaseLayout
+  locale={locale}
+  title="Datenschutz"
+  description="Datenschutzerklärung von The Technical Marketer."
+  pathname={privacyPath(locale)}
+  noindex
+>
+  <section class="sect sect-tight">
+    <div class="sect-narrow">
+      <h1 class="sect-title">Datenschutzerklärung</h1>
+      <div class="au-alert au-alert-warning legal-notice" role="note">
+        <strong>[PLATZHALTER]</strong> {t('legal.placeholder')}
+      </div>
+
+      <div class="prose">
+        <h2>Verantwortlicher</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Name, Anschrift und Kontakt des Verantwortlichen, wie im
+            Impressum]</span>
+        </p>
+
+        <h2>Hosting über GitHub Pages</h2>
+        <p>
+          Diese Website wird als statische Seite über GitHub Pages ausgeliefert (GitHub Inc., USA, bzw.
+          Microsoft-Gruppe). Beim Aufruf verarbeitet der Hosting-Anbieter technisch notwendige Daten wie die
+          IP-Adresse und Server-Logdaten.
+        </p>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Rechtsgrundlage (Art. 6 Abs. 1 lit. f DSGVO), Hinweise zur
+            Drittlandübermittlung und Link zur Datenschutzerklärung von GitHub, rechtlich prüfen]</span>
+        </p>
+
+        <h2>Schriften</h2>
+        <p>
+          Die verwendeten Schriften werden von dieser Website selbst ausgeliefert. Es werden keine Schriften von
+          Drittanbietern nachgeladen.
+        </p>
+
+        <h2>Reichweitenmessung mit Google Analytics 4 (nur nach Einwilligung)</h2>
+        <p>
+          Wir verwenden Google Analytics 4 (Google Ireland Ltd. bzw. Google LLC) <strong>ausschließlich nach deiner
+          Einwilligung</strong>. Solange du nicht zugestimmt hast, wird das Analytics-Skript nicht geladen und es
+          findet keine Verbindung zu Google statt. Deine Entscheidung wird in deinem Browser (localStorage)
+          gespeichert und lässt sich jederzeit über „Cookie-Einstellungen“ im Footer ändern oder widerrufen.
+        </p>
+        {
+          !analyticsActive && (
+            <p>
+              <span class="placeholder-mark">
+                [HINWEIS: Aktuell ist keine GA4-Measurement-ID konfiguriert. Es wird weder Analytics geladen noch
+                ein Banner angezeigt. Diesen Abschnitt erst veröffentlichen, wenn GA4 aktiviert wird.]
+              </span>
+            </p>
+          )
+        }
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Rechtsgrundlage (Art. 6 Abs. 1 lit. a DSGVO, § 25 TDDDG),
+            verarbeitete Daten, Speicherdauer, Drittlandübermittlung (Data Privacy Framework), Widerruf, Link zur
+            Datenschutzerklärung von Google, rechtlich prüfen]</span>
+        </p>
+
+        <h2>RSS-Feeds</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Hinweis zu RSS-Feeds und Abrufen durch Feed-Reader, falls
+            erforderlich]</span>
+        </p>
+
+        <h2>Deine Rechte</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Auskunft, Berichtigung, Löschung, Einschränkung,
+            Datenübertragbarkeit, Widerspruch, Beschwerderecht bei der Aufsichtsbehörde]</span>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

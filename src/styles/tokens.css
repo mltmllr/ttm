@@ -1,0 +1,240 @@
+/* ============================================================================
+   AgentUnit Design System — Design Tokens
+   Single source of truth for all visual properties.
+   Palette extracted from: structure-reference circuit-board images.
+   ============================================================================ */
+
+:root {
+  /* ==========================================================================
+     COLOR PALETTE
+     Extracted pixel-by-pixel from the structure-reference PCB imagery.
+     Crimson traces dominate. Copper at junction nodes. Rose-pink secondary
+     traces. Steel-blue chip surfaces. Deep navy-slate backgrounds.
+     ========================================================================== */
+
+  /* --- Background / Surface (dark navy-slate, from PCB substrate) --- */
+  --au-bg-void:        #04070d;  /* deepest black — page background */
+  --au-bg-base:        #080c16;  /* primary background — the PCB substrate */
+  --au-bg-raised:      #0d1220;  /* cards, panels */
+  --au-bg-elevated:    #111828;  /* modals, dropdowns, popovers */
+  --au-bg-overlay:     #161e30;  /* hover states, active surfaces */
+  --au-bg-subtle:      #1b2538;  /* subtle highlights, table stripes */
+
+  /* --- Border / Separator (from PCB grid lines) --- */
+  --au-border-faint:   #151d2e;  /* barely visible — silkscreen grid */
+  --au-border-default: #1e2a42;  /* standard borders — visible grid lines */
+  --au-border-strong:  #2a3a5a;  /* emphasized borders, focus rings */
+
+  /* --- Text --- */
+  --au-text-primary:   #e2e6ef;  /* main body text — cool white */
+  --au-text-secondary: #7e8a9f;  /* labels, captions */
+  --au-text-tertiary:  #4a5568;  /* placeholders, disabled */
+  --au-text-inverse:   #080c16;  /* text on bright backgrounds */
+
+  /* --- Accent: Crimson (PRIMARY — the dominant trace color) --- */
+  --au-crimson-50:     #fef2f2;
+  --au-crimson-100:    #fde3e3;
+  --au-crimson-200:    #fbc8c8;
+  --au-crimson-300:    #f7a0a0;
+  --au-crimson-400:    #e8524e;  /* primary crimson — the trace lines */
+  --au-crimson-500:    #d43d42;
+  --au-crimson-600:    #b42a30;
+  --au-crimson-700:    #8f2028;
+  --au-crimson-800:    #6d1a20;
+  --au-crimson-900:    #4a1216;
+  --au-crimson-glow:   rgba(212, 61, 66, 0.3);
+
+  /* --- Accent: Copper (SECONDARY — junction nodes, pushed toward red) --- */
+  --au-copper-50:      #fdf0ec;
+  --au-copper-100:     #f9d8cc;
+  --au-copper-200:     #f0b199;
+  --au-copper-300:     #de7e5c;
+  --au-copper-400:     #c4593a;  /* primary copper — warm red-orange node glow */
+  --au-copper-500:     #a84830;
+  --au-copper-600:     #8c3826;
+  --au-copper-700:     #6e2c1e;
+  --au-copper-800:     #522118;
+  --au-copper-900:     #381610;
+  --au-copper-glow:    rgba(196, 89, 58, 0.3);
+
+  /* --- Accent: Rose (TERTIARY — secondary trace lines, pink paths) --- */
+  --au-rose-50:        #fdf2f6;
+  --au-rose-100:       #fbe4ec;
+  --au-rose-200:       #f7c5d8;
+  --au-rose-300:       #f09aba;
+  --au-rose-400:       #d4587a;  /* primary rose — the pink traces */
+  --au-rose-500:       #b8436a;
+  --au-rose-600:       #962f55;
+  --au-rose-700:       #752343;
+  --au-rose-800:       #571a33;
+  --au-rose-900:       #3c1224;
+  --au-rose-glow:      rgba(212, 88, 122, 0.3);
+
+  /* --- Accent: Steel (COOL — chip surfaces, metallic highlights) --- */
+  --au-steel-50:       #f0f5f8;
+  --au-steel-100:      #d6e4eb;
+  --au-steel-200:      #afc8d6;
+  --au-steel-300:      #7ea8ba;
+  --au-steel-400:      #4a7d8c;  /* primary steel — chip surface blue */
+  --au-steel-500:      #3a6573;
+  --au-steel-600:      #2d4f5c;
+  --au-steel-700:      #233c47;
+  --au-steel-800:      #1a2c34;
+  --au-steel-900:      #111e24;
+  --au-steel-glow:     rgba(74, 125, 140, 0.3);
+
+  /* --- Neutral / Slate (structural elements, chip bodies) --- */
+  --au-slate-50:       #eef0f4;
+  --au-slate-100:      #d4d9e2;
+  --au-slate-200:      #a8b0c0;
+  --au-slate-300:      #7e8a9f;
+  --au-slate-400:      #5e6b82;
+  --au-slate-500:      #465168;
+  --au-slate-600:      #343e52;
+  --au-slate-700:      #262f40;
+  --au-slate-800:      #1a2130;
+  --au-slate-900:      #111622;
+
+  /* --- Semantic Colors --- */
+  --au-success:        #34d399;
+  --au-success-glow:   rgba(52, 211, 153, 0.25);
+  --au-warning:        var(--au-copper-400);
+  --au-warning-glow:   var(--au-copper-glow);
+  --au-danger:         var(--au-crimson-400);
+  --au-danger-glow:    var(--au-crimson-glow);
+  --au-info:           var(--au-steel-400);
+  --au-info-glow:      var(--au-steel-glow);
+
+  /* ==========================================================================
+     TYPOGRAPHY
+     ========================================================================== */
+
+  --au-font-sans:      'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --au-font-mono:      'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --au-font-display:   'Outfit', 'Inter', var(--au-font-sans);  /* smooth geometric display face */
+
+  --au-text-xs:        0.75rem;
+  --au-text-sm:        0.875rem;
+  --au-text-base:      1rem;
+  --au-text-lg:        1.125rem;
+  --au-text-xl:        1.25rem;
+  --au-text-2xl:       1.5rem;
+  --au-text-3xl:       1.875rem;
+  --au-text-4xl:       2.25rem;
+  --au-text-5xl:       3rem;
+
+  --au-weight-normal:  400;
+  --au-weight-medium:  500;
+  --au-weight-semibold: 600;
+  --au-weight-bold:    700;
+
+  --au-leading-tight:  1.25;
+  --au-leading-normal: 1.5;
+  --au-leading-relaxed: 1.75;
+
+  --au-tracking-tight: -0.025em;
+  --au-tracking-normal: 0;
+  --au-tracking-wide:  0.05em;
+  --au-tracking-wider: 0.1em;
+
+  /* ==========================================================================
+     SPACING — 8px base grid
+     ========================================================================== */
+
+  --au-space-0:   0;
+  --au-space-1:   0.25rem;
+  --au-space-2:   0.5rem;
+  --au-space-3:   0.75rem;
+  --au-space-4:   1rem;
+  --au-space-5:   1.25rem;
+  --au-space-6:   1.5rem;
+  --au-space-8:   2rem;
+  --au-space-10:  2.5rem;
+  --au-space-12:  3rem;
+  --au-space-16:  4rem;
+  --au-space-20:  5rem;
+  --au-space-24:  6rem;
+
+  /* ==========================================================================
+     BORDERS & RADII
+     ========================================================================== */
+
+  --au-radius-none: 0;
+  --au-radius-sm:   0.25rem;
+  --au-radius-md:   0.5rem;
+  --au-radius-lg:   0.75rem;
+  --au-radius-xl:   1rem;
+  --au-radius-full: 9999px;
+
+  --au-border-width-thin:   1px;
+  --au-border-width-medium: 2px;
+
+  /* ==========================================================================
+     SHADOWS & GLOWS
+     ========================================================================== */
+
+  --au-shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.5);
+  --au-shadow-md:    0 4px 12px rgba(0, 0, 0, 0.6);
+  --au-shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.7);
+  --au-shadow-xl:    0 16px 48px rgba(0, 0, 0, 0.8);
+
+  --au-glow-crimson:  0 0 12px var(--au-crimson-glow), 0 0 4px var(--au-crimson-glow);
+  --au-glow-copper:   0 0 12px var(--au-copper-glow), 0 0 4px var(--au-copper-glow);
+  --au-glow-rose:     0 0 12px var(--au-rose-glow), 0 0 4px var(--au-rose-glow);
+  --au-glow-steel:    0 0 12px var(--au-steel-glow), 0 0 4px var(--au-steel-glow);
+  --au-glow-success:  0 0 12px var(--au-success-glow), 0 0 4px var(--au-success-glow);
+
+  --au-glow-crimson-intense:  0 0 24px var(--au-crimson-glow), 0 0 8px var(--au-crimson-glow), 0 0 2px var(--au-crimson-400);
+  --au-glow-copper-intense:   0 0 24px var(--au-copper-glow), 0 0 8px var(--au-copper-glow), 0 0 2px var(--au-copper-400);
+  --au-glow-rose-intense:     0 0 24px var(--au-rose-glow), 0 0 8px var(--au-rose-glow), 0 0 2px var(--au-rose-400);
+  --au-glow-steel-intense:    0 0 24px var(--au-steel-glow), 0 0 8px var(--au-steel-glow), 0 0 2px var(--au-steel-400);
+
+  /* ==========================================================================
+     TRANSITIONS & ANIMATION
+     ========================================================================== */
+
+  --au-duration-fast:    100ms;
+  --au-duration-normal:  200ms;
+  --au-duration-slow:    400ms;
+  --au-duration-glacial: 800ms;
+
+  --au-ease-default:  cubic-bezier(0.4, 0, 0.2, 1);
+  --au-ease-in:       cubic-bezier(0.4, 0, 1, 1);
+  --au-ease-out:      cubic-bezier(0, 0, 0.2, 1);
+  --au-ease-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --au-transition-fast:    all var(--au-duration-fast) var(--au-ease-default);
+  --au-transition-normal:  all var(--au-duration-normal) var(--au-ease-default);
+  --au-transition-slow:    all var(--au-duration-slow) var(--au-ease-default);
+
+  /* ==========================================================================
+     Z-INDEX SCALE
+     ========================================================================== */
+
+  --au-z-base:      0;
+  --au-z-raised:    10;
+  --au-z-dropdown:  100;
+  --au-z-sticky:    200;
+  --au-z-overlay:   300;
+  --au-z-modal:     400;
+  --au-z-toast:     500;
+  --au-z-tooltip:   600;
+
+  /* ==========================================================================
+     SPECIAL EFFECTS
+     ========================================================================== */
+
+  --au-grid-color:      rgba(30, 42, 66, 0.5);
+  --au-grid-size:       24px;
+  --au-grid-dot-size:   1px;
+
+  --au-trace-thin:      1px;
+  --au-trace-medium:    2px;
+  --au-trace-thick:     3px;
+
+  /* PCB grid variants */
+  --au-grid-color-strong: rgba(30, 42, 66, 0.7);
+  --au-grid-color-accent: rgba(212, 61, 66, 0.08);
+  --au-grid-size-lg:    48px;
+  --au-grid-size-sm:    12px;
+}

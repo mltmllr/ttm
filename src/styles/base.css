@@ -1,0 +1,187 @@
+/* ============================================================================
+   AgentUnit Design System — Base Styles
+   Global resets and base element styling. Import after tokens.css.
+   ============================================================================ */
+
+/* Schriften: lokal über @fontsource (siehe fonts.css), kein Google-Fonts-Import. */
+
+/* --- Reset & Box Model --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Document --- */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--au-font-sans);
+  font-size: var(--au-text-base);
+  font-weight: var(--au-weight-normal);
+  line-height: var(--au-leading-normal);
+  color: var(--au-text-primary);
+  background-color: var(--au-bg-base);
+  min-height: 100vh;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--au-font-display);
+  font-weight: var(--au-weight-semibold);
+  line-height: var(--au-leading-tight);
+  letter-spacing: var(--au-tracking-tight);
+  color: var(--au-text-primary);
+}
+
+h1 { font-size: var(--au-text-4xl); }
+h2 { font-size: var(--au-text-3xl); }
+h3 { font-size: var(--au-text-2xl); }
+h4 { font-size: var(--au-text-xl); }
+h5 { font-size: var(--au-text-lg); }
+h6 { font-size: var(--au-text-base); font-weight: var(--au-weight-medium); }
+
+p {
+  margin-bottom: var(--au-space-4);
+  color: var(--au-text-secondary);
+}
+
+small {
+  font-size: var(--au-text-sm);
+  color: var(--au-text-tertiary);
+}
+
+strong { font-weight: var(--au-weight-semibold); }
+
+code, pre, kbd, samp {
+  font-family: var(--au-font-mono);
+}
+
+code {
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  background: var(--au-bg-overlay);
+  border: var(--au-border-width-thin) solid var(--au-border-faint);
+  border-radius: var(--au-radius-sm);
+  color: var(--au-steel-400);
+}
+
+pre {
+  padding: var(--au-space-4);
+  background: var(--au-bg-raised);
+  border: var(--au-border-width-thin) solid var(--au-border-default);
+  border-radius: var(--au-radius-md);
+  overflow-x: auto;
+  font-size: var(--au-text-sm);
+  line-height: var(--au-leading-relaxed);
+}
+
+pre code {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+/* --- Links --- */
+a {
+  color: var(--au-steel-400);
+  text-decoration: none;
+  transition: var(--au-transition-fast);
+}
+
+a:hover {
+  color: var(--au-steel-300);
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: var(--au-border-width-medium) solid var(--au-steel-400);
+  outline-offset: 2px;
+  border-radius: var(--au-radius-sm);
+}
+
+/* --- Lists --- */
+ul, ol {
+  padding-left: var(--au-space-6);
+  margin-bottom: var(--au-space-4);
+  color: var(--au-text-secondary);
+}
+
+li + li {
+  margin-top: var(--au-space-1);
+}
+
+/* --- Horizontal Rule --- */
+hr {
+  border: none;
+  border-top: var(--au-border-width-thin) solid var(--au-border-faint);
+  margin: var(--au-space-8) 0;
+}
+
+/* --- Selection --- */
+::selection {
+  background: rgba(74, 125, 140, 0.3);
+  color: var(--au-text-primary);
+}
+
+/* --- Scrollbar (Webkit) --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--au-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--au-border-default);
+  border-radius: var(--au-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--au-border-strong);
+}
+
+/* --- Tables --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--au-text-sm);
+}
+
+th {
+  text-align: left;
+  font-weight: var(--au-weight-medium);
+  color: var(--au-text-secondary);
+  padding: var(--au-space-3) var(--au-space-4);
+  border-bottom: var(--au-border-width-thin) solid var(--au-border-default);
+  letter-spacing: var(--au-tracking-wide);
+  text-transform: uppercase;
+  font-size: var(--au-text-xs);
+}
+
+td {
+  padding: var(--au-space-3) var(--au-space-4);
+  border-bottom: var(--au-border-width-thin) solid var(--au-border-faint);
+  color: var(--au-text-primary);
+}
+
+tr:hover td {
+  background: var(--au-bg-overlay);
+}
+
+/* --- Focus Visible (global) --- */
+:focus-visible {
+  outline: var(--au-border-width-medium) solid var(--au-steel-400);
+  outline-offset: 2px;
+}

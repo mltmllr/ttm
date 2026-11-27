@@ -1,44 +1,39 @@
 ---
-import ArticleCard from '../../../components/ArticleCard.astro';
+import PostList from '../../../components/PostList.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { localeFromParam } from '../../../i18n/locales';
-import { topicDescriptionKey, topicLabelKey, useTranslations } from '../../../i18n/ui';
-import { articlesForTopic, getArticles } from '../../../lib/articles';
+import { localeFromParam, locales } from '../../../i18n/locales';
+import { useTranslations } from '../../../i18n/ui';
+import { newsForLocale } from '../../../lib/news';
 import { topicPath, topicsPath } from '../../../lib/paths';
-import { topicFromParam, topicParams } from '../../../lib/topics';
+import { topicInfo, topicList, type Topic } from '../../../lib/topics';
 
 export function getStaticPaths() {
-  return topicParams();
+  return locales.flatMap((lang) => topicList.map((topic) => ({ params: { lang, topic: topic.id } })));
 }
 
 const locale = localeFromParam(Astro.params.lang);
-const topic = topicFromParam(Astro.params.topic);
 const t = useTranslations(locale);
-const pathname = topicPath(locale, topic);
-const articles = articlesForTopic(await getArticles(), locale, topic);
-const title = t(topicLabelKey(topic));
-const description = t(topicDescriptionKey(topic));
+const topic = topicInfo(Astro.params.topic as Topic);
+const posts = (await newsForLocale(locale)).filter((post) => post.topics.includes(topic.id));
 ---
 
-<BaseLayout locale={locale} title={title} description={description} pathname={pathname}>
-  <header>
-    <p class="kicker">
-      <a href={topicsPath(locale)}>{t('topics.title')}</a>
-    </p>
-    <h1>{title}</h1>
-    <p class="lede">{description}</p>
-  </header>
-  {
-    articles.length === 0 ? (
-      <p>{t('topics.empty')}</p>
-    ) : (
-      <ol class="entry-list">
-        {articles.map((article) => (
-          <li>
-            <ArticleCard article={article} locale={locale} />
-          </li>
-        ))}
-      </ol>
-    )
-  }
+<BaseLayout
+  locale={locale}
+  title={topic.label}
+  description={topic.description}
+  pathname={topicPath(locale, topic.id)}
+>
+  <section class="sect sect-tight">
+    <div class="sect-inner">
+      <nav class="crumbs" aria-label="Brotkrumen">
+        <a href={topicsPath(locale)}>{t('topics.title')}</a>
+      </nav>
+      <div class="sect-head" style="margin-top: var(--au-space-6);">
+        <div class="sect-label au-text-copper">{t('post.topics')}</div>
+        <h1 class="sect-title">{topic.label}</h1>
+        <p class="sect-desc">{topic.description}</p>
+      </div>
+      <PostList posts={posts} locale={locale} />
+    </div>
+  </section>
 </BaseLayout>

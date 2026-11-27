@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localeFromParam, localeParams } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { imprintPath } from '../../lib/paths';
+
+export function getStaticPaths() {
+  return localeParams();
+}
+
+const locale = localeFromParam(Astro.params.lang);
+const t = useTranslations(locale);
+---
+
+<BaseLayout
+  locale={locale}
+  title="Impressum"
+  description="Impressum von The Technical Marketer."
+  pathname={imprintPath(locale)}
+  noindex
+>
+  <section class="sect sect-tight">
+    <div class="sect-narrow">
+      <h1 class="sect-title">Impressum</h1>
+      <div class="au-alert au-alert-warning legal-notice" role="note">
+        <strong>[PLATZHALTER]</strong> {t('legal.placeholder')}
+      </div>
+
+      <div class="prose">
+        <h2>Angaben gemäß § 5 DDG</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Name bzw. Firma des Betreibers]</span><br />
+          <span class="placeholder-mark">[PLATZHALTER: Straße und Hausnummer]</span><br />
+          <span class="placeholder-mark">[PLATZHALTER: PLZ und Ort]</span>
+        </p>
+
+        <h2>Kontakt</h2>
+        <p>
+          E-Mail: <span class="placeholder-mark">[PLATZHALTER: E-Mail-Adresse]</span><br />
+          Telefon: <span class="placeholder-mark">[PLATZHALTER: Telefonnummer, falls erforderlich]</span>
+        </p>
+
+        <h2>Vertretungsberechtigte Person, Register, Umsatzsteuer-ID</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Vertretungsberechtigte Person, Handelsregister und
+            Registernummer, Umsatzsteuer-Identifikationsnummer, sofern zutreffend]</span>
+        </p>
+
+        <h2>Verantwortlich für den Inhalt</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Name und Anschrift der verantwortlichen Person nach § 18
+            Abs. 2 MStV, sofern zutreffend]</span>
+        </p>
+
+        <h2>Haftung für Inhalte und Links</h2>
+        <p>
+          <span class="placeholder-mark">[PLATZHALTER: Haftungshinweis, rechtlich geprüft]</span>
+        </p>
+
+        <h2>Hinweis</h2>
+        <p>The Technical Marketer ist ein unabhängiger News-Kanal und kein Angebot von Google.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,154 +1,95 @@
-# The Technical Marketer
+# The Technical Marketer: News-Kanal
 
-Ein Magazin über technisches Marketing. Der Zuschnitt ist eng: Google Analytics 4, Google Tag Manager und Looker Studio. Die Seite ist statisch (Astro). Artikel sind Markdown oder MDX im Repository. Oft schreibt ein Bot den Entwurf, ein Mensch gibt ihn per Pull Request frei.
+Statische Astro-Seite für <https://ttm.agentunit.com>. Deutsche News für Online-Marketer zu GA4, Google Tag Manager, Stape, SEO/GEO und KI-Tools. Beiträge sind Markdown-Dateien im Repository, veröffentlicht ist, was auf `main` liegt. Design: AgentUnit-Designsystem, nur Dark Mode, Schriften selbst gehostet.
 
 ## Lokal starten
 
-Voraussetzung ist Node.js 22.23.4 oder neuer.
+Node.js 22 oder neuer (siehe `.nvmrc`).
 
 ```bash
 npm install
-npm run dev
+npm run dev            # http://localhost:4321/ leitet auf /de/
+npm run dev:fixtures   # mit Testbeiträgen aus tests/fixtures
+npm test               # Unit-Tests (FAQ-Parser, Dateiname, Kalenderwoche)
+npm run build          # Produktions-Build nach dist/
+npm run build:fixtures # Build mit Testbeiträgen nach dist-fixtures/ (nie veröffentlichen)
+npm run check:links    # interner Linkcheck über dist/ (ohne Netz)
 ```
 
-Der Dev-Server liegt auf <http://localhost:4321/> und leitet auf `/de/` um. `npm run dev` zeigt auch Entwürfe (`draft: true`).
+Ein Build mit null Beiträgen ist gültig (Leerzustand, leere RSS-Feeds). Die Meldung „collection news does not exist or is empty“ ist dann normal.
 
-```bash
-npm run build
-npm run preview
-```
+## Beitrag hinzufügen
 
-`npm run build` ist der Maßstab. Entwürfe fehlen in `dist/`. Schemafehler brechen den Build ab.
+1. Datei `src/content/news/de/JJJJ-MM-TT-slug.md` anlegen. Vorlage, Frontmatter-Felder mit erlaubten Werten und das FAQ-Format stehen in [`docs/beitrag-vorlage.md`](docs/beitrag-vorlage.md). Verbindlich für Inhalt und Ton ist der [Notion-Leitfaden](https://app.notion.com/p/425d60e0a75c81ba966ff9e9b16c6087).
+2. `npm run build` ausführen. Fehler im Frontmatter, im Dateinamen (Muster und Datum), beim Ordner/`lang` und im FAQ-Abschnitt brechen den Build ab. Fehlt `## FAQ`, gibt es eine Warnung.
+   Aufbau am Ende: `… ## Was das für dich heißt`, `## FAQ`, `## Quellen` (Markdown-Liste mit Links). Die Quellen stehen zusätzlich im Frontmatter `sources` (Pflicht, nur für Schema.org-`citation` und Meta). Die Beitragsseite rendert diese Liste nicht noch einmal.
+3. Pull Request öffnen. Der Merge auf `main` veröffentlicht den Beitrag.
 
-## Adressen
+Neue Kategorie: ein Eintrag in `src/lib/categories.ts`. Schema, Navigation, Kategorie-Seite und RSS ziehen nach. Neues Topic: ein Eintrag in `src/lib/topics.ts`.
 
-Deutsch ist `defaultLocale` und wird unter `/de/` ausgeliefert (`prefixDefaultLocale: true` in `astro.config.ts`). `/` leitet auf `/de/` um. Jede Sprache bekommt denselben Präfix. Englisch wäre später `/en/…`, ohne dass die deutschen Adressen umziehen.
-
-Die Pfadsegmente bleiben in allen Sprachen gleich: `artikel`, `themen`, `ueber`. Übersetzt werden die Oberflächentexte und die Inhalte, nicht die Routen. Deshalb braucht eine neue Sprache keine neue Datei unter `src/pages/`.
-
-| Seite | Pfad |
-| --- | --- |
-| Magazin | `/de/` |
-| Artikel | `/de/artikel/<slug>/` |
-| Themen | `/de/themen/` und `/de/themen/<thema>/` |
-| Über / Impressum | `/de/ueber/` |
-| RSS | `/de/rss.xml` |
-| Sitemap | `/sitemap-index.xml` |
-
-Kanonische URLs, Open Graph, `hreflang` und die Sitemap zeigen auf `https://ttm.agentunit.com`. Es gibt keinen `base`-Pfad: die Site hängt an der Domain, nicht unter `/ttm/`.
-
-## Artikel hinzufügen
-
-1. `templates/artikel.md` nach `src/content/articles/<lang>/<slug>.md` kopieren. `.mdx` geht genauso, wenn Komponenten nötig sind. Für normalen Text reicht Markdown.
-2. Frontmatter ausfüllen. Der Dateiname ist der Slug: klein, ASCII, Bindestriche. `ga4-ereignisse-benennen.md` wird zu `/de/artikel/ga4-ereignisse-benennen/`.
-3. Der Ordner muss `lang` entsprechen. `lang: de` liegt unter `src/content/articles/de/`.
-4. `draft: true` lassen, bis ein Mensch den Text freigibt. Dann `draft: false`.
-5. `placeholder: true` nur für Beispieltexte. Beim echten Artikel entfernen oder auf `false` setzen. Die Seite zeigt dann den Hinweis „Platzhalter“.
-6. `npm run build` muss durchlaufen.
-
-`draft` ist Pflicht und hat keinen Default. Fehlt es, schlägt der Build fehl, statt den Text still zu veröffentlichen.
-
-### Felder
-
-| Feld | Pflicht | Bedeutung |
-| --- | --- | --- |
-| `title` | ja | Überschrift. |
-| `description` | ja | Kurztext für die Liste, RSS und die Meta-Description. |
-| `pubDate` | ja | Kalenderdatum, `YYYY-MM-DD`, in Anführungszeichen. |
-| `updatedDate` | nein | Nur setzen, wenn der Text danach geändert wurde. |
-| `lang` | ja | Muss ein Schlüssel aus `src/i18n/locales.ts` sein und zum Ordner passen. |
-| `topics` | ja | Mindestens eins von `ga4`, `gtm`, `looker-studio`. |
-| `sources` | ja | Liste aus `{ title, url }`. `url` ist `http` oder `https`. Darf leer sein, ein echter Artikel sollte zitieren. |
-| `draft` | ja | `true` blendet den Artikel im Production-Build aus. |
-| `placeholder` | nein | Default `false`. `true` markiert ein Beispiel. |
-| `translationKey` | ja | Stabiler, sprachneutraler Schlüssel (`kleinbuchstaben-und-bindestriche`). Dieselbe Sache hat in jeder Sprache denselben Schlüssel, auch wenn der Slug abweicht. Pro Sprache nur einmal. |
-
-Keine erfundenen Kennzahlen, Prozente, Benchmarks oder Studien. Was eine Zahl wäre, bleibt ein Verweis auf eine Quelle. Codebeispiele sind Syntax, keine Messergebnisse.
-
-### Vorlage
-
-Die vollständige Datei liegt unter `templates/artikel.md`. Auszug:
-
-````md
----
-title: ""
-description: ""
-pubDate: "2026-11-26"
-# updatedDate: "2026-11-26"
-lang: de
-topics:
-  - ga4
-  # erlaubt: ga4, gtm, looker-studio
-sources:
-  - title: "Titel der Quelle"
-    url: "https://example.com/dokumentation"
-draft: true
-placeholder: true
-translationKey: kurzer-stabiler-schluessel
----
-
-Der erste Absatz sagt, worum es geht.
-````
-
-Eine Übersetzung ist eine neue Datei in der anderen Sprache mit demselben `translationKey`. Der Slug darf anders sein. `hreflang` verknüpft die Fassungen über diesen Schlüssel. Die Sprachumschaltung erscheint, sobald eine zweite sichtbare Fassung existiert.
-
-## Sprache hinzufügen
-
-Keine neue Route und keine neue Komponente. Drei Stellen:
-
-1. In `src/i18n/locales.ts` einen Eintrag ergänzen. Das ist die Konfiguration. `astro.config.ts` liest `locales` und `defaultLocale` von dort.
-
-   ```ts
-   en: {
-     label: 'English',
-     hreflang: 'en',
-     ogLocale: 'en_US',
-   },
-   ```
-
-   `defaultLocale` bleibt `de`, solange Deutsch die Hauptsprache ist.
-
-2. In `src/i18n/ui.ts` für `en` dieselben Schlüssel wie unter `de` ausfüllen. Fehlt ein Text, bricht der Build ab.
-3. Inhalte anlegen: `src/content/pages/en/ueber.md` und Artikel unter `src/content/articles/en/`.
-
-Danach gibt es `/en/`, `/en/rss.xml` und die `hreflang`-Einträge ohne weitere Verdrahtung. Die Oberflächentexte kommen nur aus `src/i18n/ui.ts`.
-
-Die Sprachumschaltung im Kopf erscheint, sobald eine Seite mehr als eine Sprache hat. Bei Artikeln nur, wenn eine sichtbare Übersetzung denselben `translationKey` trägt. Eine fehlende Übersetzung wird nicht verlinkt.
-
-Ein neues Thema ist ein Wert in `src/lib/topics.ts` plus die Schlüssel `topic.<id>` und `topic.<id>.description` in `ui.ts`.
-
-## Aufbau
+## Struktur
 
 ```text
-src/content.config.ts          Sammlung articles und pages
-src/content/articles/<lang>/   Artikel
-src/content/pages/<lang>/      Über-Seite
-src/i18n/locales.ts            Sprachen
-src/i18n/ui.ts                 Oberflächentexte
-src/pages/[lang]/              ein Satz Seiten für jede Sprache
-src/pages/index.astro          leitet / auf die Standardsprache um
-templates/artikel.md           Vorlage
-public/CNAME                   ttm.agentunit.com
+astro.config.ts                 Site, i18n (/de/), Sitemap, Shiki (github-dark)
+src/config/site.ts              GA4-Measurement-ID (PUBLIC_GA4_ID)
+src/content.config.ts           Collection news (zod-Schema, Fixture-Schalter)
+src/content/news/de/            Beiträge (leer, nur .gitkeep)
+src/lib/categories.ts           Kategorien (Slug, Label, Kurzbeschreibung)
+src/lib/topics.ts               Topic-Tags
+src/lib/faq.ts                  FAQ-Parser und FAQPage-JSON-LD
+src/lib/news-meta.ts            Dateiname, Datum, ISO-Kalenderwoche
+src/lib/news.ts                 Beiträge laden und prüfen
+src/lib/jsonld.ts               NewsArticle-JSON-LD
+src/i18n/                       Sprachen und UI-Texte
+src/layouts, src/components     Layout, Header, Footer, Karten, Consent-Banner
+src/styles/                     tokens/base/components aus AgentUnit, site.css, fonts.css
+src/pages/[lang]/               Start, news/, kategorie/, themen/, impressum, datenschutz, rss.xml
+src/pages/index.astro           leitet / auf /de/ um
+tests/                          node:test-Tests und Fixtures (tests/fixtures/news/de)
+scripts/check-links.mjs         interner Linkcheck
+docs/beitrag-vorlage.md         Vorlage und Regeln für die Redaktion
+public/CNAME                    ttm.agentunit.com
 ```
 
-Schriften kommen vom System. Es wird nichts von einem Font-Host geladen. Hell und dunkel folgen `prefers-color-scheme`. Codeblöcke nutzen Shiki (`github-light` / `github-dark`).
+| Seite | Adresse |
+| --- | --- |
+| Start | `/de/` |
+| Beitrag | `/de/news/<slug>/` |
+| Kategorie | `/de/kategorie/<slug>/` (`analytics-und-tracking`, `ki`, `seo-geo`) |
+| Themen | `/de/themen/` und `/de/themen/<topic>/` |
+| Impressum, Datenschutz | `/de/impressum/`, `/de/datenschutz/` |
+| RSS | `/de/rss.xml` und `/de/kategorie/<slug>/rss.xml` |
+| Sitemap | `/sitemap-index.xml` |
+
+Jeder Beitrag trägt NewsArticle-JSON-LD und, wenn ein `## FAQ`-Abschnitt vorhanden ist, FAQPage-JSON-LD. Der FAQ-Abschnitt endet an der nächsten `## `-Überschrift, die Quellen landen also nicht im FAQ-Markup.
+
+## Fixtures
+
+Die drei Testbeiträge unter `tests/fixtures/news/de/` (je eine Kategorie, eine Eilmeldung, zwei Wochen-Updates, alle als „Beispiel“ markiert) lädt die Collection nur mit `TTM_FIXTURES=1`, also über `npm run build:fixtures` und `npm run dev:fixtures`. In diesem Modus ersetzen sie die echten Beiträge. `npm run build` und der Deploy-Workflow veröffentlichen sie nie.
+
+## Google Analytics 4 und Consent
+
+Die Measurement-ID kommt aus `PUBLIC_GA4_ID` (lokal in `.env`, siehe `.env.example`; im Deploy aus der Repository-Variable `PUBLIC_GA4_ID`). Sie ist öffentlich und kein Secret.
+
+- Leer (Standard): kein Banner, kein Google Analytics, kein Request an Google.
+- Gesetzt: Opt-in-Banner mit gleichwertigen Schaltflächen „Akzeptieren“ und „Ablehnen“. `gtag.js` wird erst nach Zustimmung nachgeladen. Die Entscheidung liegt in `localStorage` (`ttm-consent`). Der Footer-Link „Cookie-Einstellungen“ öffnet das Banner erneut.
 
 ## Deployment
 
-Zwei Workflows:
+- `.github/workflows/ci.yml` (Pull Requests): `npm ci`, `npm test`, `npm run build`, Linkcheck, Fixture-Build, Linkcheck.
+- `.github/workflows/deploy.yml` (Push auf `main`): Tests, Build, Linkcheck, Veröffentlichung auf GitHub Pages.
 
-- `.github/workflows/ci.yml` baut bei jedem Pull Request (`npm ci`, `npm run build`).
-- `.github/workflows/deploy.yml` baut bei einem Push auf `main` und veröffentlicht mit `actions/upload-pages-artifact` und `actions/deploy-pages`.
+## Einmalige Schritte (Repo-Inhaber)
 
-`site` in `astro.config.ts` ist `https://ttm.agentunit.com`. `public/CNAME` enthält `ttm.agentunit.com`. Der Build schreibt die kanonischen URLs deshalb auf diese Domain, nicht auf `mltmllr.github.io/ttm`.
+Der Deploy-Workflow kann erst veröffentlichen, wenn das eingerichtet ist:
 
-## Einmalige Schritte
+1. **Settings → Pages → Build and deployment → Source:** GitHub Actions.
+2. **Settings → Pages → Custom domain:** `ttm.agentunit.com` eintragen (`public/CNAME` liegt im Build).
+3. **DNS** von `agentunit.com`: CNAME `ttm` auf `mltmllr.github.io`.
+4. Nach der Zertifikatsausstellung **Enforce HTTPS** einschalten.
+5. Optional für GA4: unter **Settings → Secrets and variables → Actions → Variables** die Variable `PUBLIC_GA4_ID` anlegen.
 
-M M erledigt das einmal in GitHub und beim DNS von `agentunit.com`. Der Workflow kann erst veröffentlichen, wenn die Pages-Quelle auf GitHub Actions steht.
+## Offene Platzhalter
 
-1. Im Repository **Settings → Pages → Build and deployment** bei **Source** **GitHub Actions** wählen.
-2. Ebenfalls unter **Settings → Pages** als **Custom domain** `ttm.agentunit.com` eintragen und speichern. Die Datei `public/CNAME` liegt im Build, GitHub übernimmt eine Domain bei einem Actions-Deploy aber nicht zuverlässig allein aus dieser Datei. Die Domain im Repository einzutragen, bevor der DNS-Eintrag existiert, ist auch der von GitHub empfohlene Schutz davor, dass jemand anderes die Subdomain belegt.
-3. Beim DNS von `agentunit.com` einen **CNAME** `ttm` auf `mltmllr.github.io` setzen.
-4. Sobald das Zertifikat ausgestellt ist, unter **Settings → Pages** **Enforce HTTPS** einschalten.
-
-Bis Domain und Zertifikat stehen, kann die Aktion schon bauen. Aufrufbar ist die Site unter der endgültigen Adresse erst danach.
+- **GA4-Measurement-ID:** nicht gesetzt, bis `PUBLIC_GA4_ID` konfiguriert ist.
+- **Impressum** (`src/pages/[lang]/impressum.astro`) und **Datenschutz** (`src/pages/[lang]/datenschutz.astro`): Inhalte sind mit `[PLATZHALTER: …]` markiert und müssen rechtlich geprüft und ersetzt werden. Beide Seiten sind bis dahin `noindex` und nicht in der Sitemap. Zum Freigeben `noindex` in den Seiten und den Ausschluss in `astro.config.ts` entfernen.
