@@ -24,6 +24,8 @@ Wer Stape für serverseitiges Tracking oder als Consent-Banner nutzt, sollte Rel
 
 Seit Release 5.23 kannst du in einem sGTM-Container mehrere CMPs anlegen, eine pro Domain. Eine CMP ist die Consent-Management-Plattform, die Einwilligungen speichert und an Tools weitergibt. Neue CMPs legst du aus den Standardeinstellungen an oder kopierst eine bestehende. Die Funktion gibt es ab dem Business-Plan. Relevant ist das für dich, wenn du schon mehrere Websites über einen Container betreibst und Consent dort pro Domain pflegen willst. ([Release Notes 5.23](https://stape.io/helpdesk/documentation/release-notes))
 
+![Schema der Stape-Multidomain-CMP: In einem Server-GTM-Container liegt je Domain eine eigene CMP mit Consent-Banner; die Einwilligung wird gespeichert, als Signal weitergegeben und soll von den Tags in Web-GTM und Server-GTM beachtet werden, bevor Ereignisse wie page_view laufen.](/images/news/2026-11-27-kw-48-analytics-und-tracking/stape-multidomain-cmp-schema.svg "Schema nach Stape Release Notes 5.23 und der Stape-Anleitung zur Consent-Verwaltung in WordPress, 23. und 24.11.2026.")
+
 ## Consent-Banner: neuer Blocker-Schutz und eigenes CSS
 
 Das Stape-Banner nutzt nicht mehr die öffentlichen Klassen `stape-cmp-*`. Stattdessen erzeugt es für jeden Container eigene Namen. So sollen generische Cookie-Notice-Blocker das Banner nicht mehr ausblenden. Neu ist außerdem ein Feld für eigenes CSS im Consent Builder, angewendet über `window.__stapeCmp.applyCss()`. Für dich zählt: Ein ausgeblendetes Banner fragt keine Einwilligung ab. Wie stark sich der Schutz auf deine Consent-Raten auswirkt, sagt die Quelle allerdings nicht. ([Release Notes 5.23](https://stape.io/helpdesk/documentation/release-notes))
