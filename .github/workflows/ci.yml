@@ -19,5 +19,13 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
-      - name: Build
+      - name: Test
+        run: npm test
+      - name: Build (prüft Frontmatter, Dateinamen und FAQ aller Beiträge)
         run: npm run build
+      - name: Linkcheck dist
+        run: node scripts/check-links.mjs dist
+      - name: Fixture-Build (Testbeiträge, nie veröffentlicht)
+        run: npm run build:fixtures
+      - name: Linkcheck dist-fixtures
+        run: node scripts/check-links.mjs dist-fixtures
